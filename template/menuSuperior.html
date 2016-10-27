@@ -1,4 +1,4 @@
-      <ul class="navbar navbar-default navbar-fixed-top">
+      <ul class="navbar navbar-default navbar-fixed-top navbar-inverse">
 		         <li  class="btn btn-info animated bounceInLeft">
 		         	<a ui-sref="menu">
 		         		 <span class="glyphicon glyphicon-list-alt">&nbsp;</span>
@@ -6,7 +6,7 @@
 		         	</a>
 		         </li>
 		         <li class="btn btn-info animated bounceInLeft" ng-if="esVisibleAdmin">
-		         	<a ui-sref="alta" ng-if="esVisibleAdmin">
+		         	<a ui-sref="alta" ng-if="esVisibleAdmin" class="active">
 		         		<span class="glyphicon glyphicon-plus-sign">&nbsp;</span>
 		         		Alta Usuarios
 		         	</a>
@@ -19,12 +19,12 @@
 		         <li  class="btn btn-info animated bounceInLeft" >
 		         	<a ui-sref="grillaProducto"> 
 		         		<span class="glyphicon glyphicon-th" >&nbsp;</span>
-		         			Grilla Productos</a>
+		         			Grilla Locales</a>
 		         		</li>
 		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible">
 		         	<a ui-sref="altaProducto" ng-if="esVisible"> 
 		         		<span class="glyphicon glyphicon-plus-sign" >&nbsp;</span>
-		         			Alta Productos</a>
+		         			Alta Locales</a>
 		         		</li>
 		         <li  class="btn btn-info animated bounceInLeft">
 		         	<a ng-click="Logout()"> 

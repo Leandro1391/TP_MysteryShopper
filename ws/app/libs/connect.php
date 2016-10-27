@@ -5,7 +5,7 @@ class Conexion
 	private static $ObjetoAccesoDatos;
     private $objetoPDO;
  	
- 	private $host = 'mysql:host=localhost;dbname=ejemploabm;charset=utf8';
+ 	private $host = 'mysql:host=localhost;dbname=userandloc;charset=utf8';
  	private $usuario = "root";
  	private $clave = "";
 

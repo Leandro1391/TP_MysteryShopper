@@ -9,7 +9,7 @@ if(!defined("SPECIALCONSTANT")) die("Acceso denegado");
 
 // GET: Para consultar y leer recursos
 
-$app->get("/personas/", function() use($app)
+$app->get("/usuarios/", function() use($app)
 {
 	$cnn = Conexion::DameAcceso();
 	$sentencia = $cnn->prepare('call TraerTodasLasPersonas()');
@@ -22,7 +22,7 @@ $app->get("/personas/", function() use($app)
 	$app->response->body(json_encode($res));
 });
 
-$app->get("/personas/:id", function($id) use($app)
+$app->get("/usuarios/:id", function($id) use($app)
 {
 	try{
 		$cnn = Conexion::DameAcceso();
@@ -42,7 +42,7 @@ $app->get("/personas/:id", function($id) use($app)
 });
 
 // POST: Para crear recursos
-$app->post("/personas/", function() use($app)
+$app->post("/usuarios/", function() use($app)
 {
 	$nombre = $app->request->post("nombre");
 	$dni = $app->request->post("dni");
@@ -67,7 +67,7 @@ $app->post("/personas/", function() use($app)
 
 
 // PUT: Para editar recursos
-$app->put("/personas/", function() use($app)
+$app->put("/usuarios/", function() use($app)
 {
 	$nombre = $app->request->put("nombre");
 	$id = $app->request->put("id");
@@ -88,8 +88,10 @@ $app->put("/personas/", function() use($app)
 	$app->response->status($status);
 	$app->response->body(json_encode($res));
 });
+
+
 // DELETE: Para eliminar recursos
-$app->delete("/personas/:id", function($id) use($app)
+$app->delete("/usuarios/:id", function($id) use($app)
 {
 	try{
 		$cnn = Conexion::DameAcceso();

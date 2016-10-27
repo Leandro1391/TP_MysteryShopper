@@ -6,8 +6,8 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
 
   $authProvider.loginUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
   $authProvider.signupUrl = 'TpLab4Iadanza/PHP/clases/Autentificador.php';
-  $authProvider.tokenName = 'MiPrimerTokenRSP';
-  $authProvider.tokenPrefix = 'otroEjemploR';
+  $authProvider.tokenName = 'TokenLeandro';
+  $authProvider.tokenPrefix = 'Len';
   $authProvider.authHeader = 'data';
 
   $stateProvider //si no está está linea no toma los .state
@@ -51,6 +51,8 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
 
 
 
+    //APP Control MENU
+
 app.controller('controlMenu', function($scope, $http, $auth, $state) {
   $scope.DatoTest="**Menu**";
 
@@ -58,33 +60,34 @@ app.controller('controlMenu', function($scope, $http, $auth, $state) {
   {
     //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
 
-    console.log("estoy en el if is Authenticated");
+    // console.log("estoy en el if is Authenticated");
 
     $scope.esVisible={}; //PARA EL NG-IF ADMIN Y VENDEDOR
+    
     if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="vendedor")
     {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
       $scope.esVisible=true;
     }
     else
     {
-      console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
       $scope.esVisible=false;
     }
 
     $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
     if($auth.getPayload().tipo=="administrador")
     {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
       $scope.esVisibleAdmin=true;
     }
     else
     {
-      console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
       $scope.esVisibleAdmin=false;
     }
 
-    console.info($auth.isAuthenticated(), $auth.getPayload());
+    // console.info($auth.isAuthenticated(), $auth.getPayload());
     $scope.DatoTest="**Menu**";
     $scope.usuario=$auth.getPayload();
     $scope.Logout=function()
@@ -101,58 +104,78 @@ app.controller('controlMenu', function($scope, $http, $auth, $state) {
 
 });
 
+
+
+  //APP Contro USUARIO
+
 app.controller('controlUsuario')
 
 
- //controller del Menu Superior
+ //controller del MENU SUPERIOR
 
 app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
   $scope.usuario={};
+  $scope.usuario.id = $auth.getPayload().id;
   $scope.usuario.tipo=$auth.getPayload().tipo;
   //$scope.usuario.foto=$auth.getPayload().foto;   tengo que traer la foto con otro método
 
-  console.log("Estoy en el menu Superior")
-  console.log($auth.getPayload());
+  //SLIM
+
+  $http.get('Datos/usuarios/'+ $scope.usuario.id)
+  .then(function(respuesta) {       
+
+          $scope.usuario = respuesta.data;
+           // console.log("linea 132 " +respuesta.data);
+
+        },function errorCallback(response) {
+            $scope.usuario= [];
+            console.log( response);
+
+    });
+
+  // console.log("Estoy en el menu Superior")
+  // console.log($auth.getPayload());
 
   if($auth.isAuthenticated())
   {
     //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
 
-    console.log("estoy en el if is Authenticated");
+    // console.log("estoy en el if is Authenticated");
 
     $scope.esVisible={}; //PARA EL NG-IF ADMIN Y VENDEDOR
     if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="cliente")
     {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
       $scope.esVisible=true;
     }
     else
     {
-      console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
       $scope.esVisible=false;
     }
 
     $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
     if($auth.getPayload().tipo=="administrador")
     {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
       $scope.esVisibleAdmin=true;
     }
     else
     {
-      console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
       $scope.esVisibleAdmin=false;
     }
 
-    console.info($auth.isAuthenticated(), $auth.getPayload());
-    $scope.DatoTest="**Menu**";
-    $scope.usuario=$auth.getPayload();
+    // console.info($auth.isAuthenticated(), $auth.getPayload());
+    // $scope.DatoTest="**Menu**";
+    // $scope.usuario=$auth.getPayload();
+
     $scope.Logout=function()
     {
       $auth.logout()
       .then(function()
       {
-        //console.log("estoy dentro del logout");
+        console.log("estoy dentro del logout");
         $state.go("login");
       });
     };
@@ -162,7 +185,7 @@ app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
 });
 
 
-app.controller('controlGrillaUsuario', function($scope, $http,$location,$state) {
+app.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario) {
     $scope.DatoTest="**grilla Usuario**";
 
 
@@ -172,17 +195,37 @@ console.log( JSON.stringify(usuario));
   $state.go("modificarUsuario, {usuario:" + JSON.stringify(usuario)  + "}");
 }
 
+FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
+
+     $scope.ListadoUsuarios=respuesta;
+
+     console.log("respuesta line 204 factory del controllerGrillaUsuario");
  
-  $http.get('PHP/nexo.php', { params: {accion :"traer"}})
-  .then(function(respuesta) {       
+});
 
-         $scope.ListadoUsuarios = respuesta.data.listado;
-         console.log(respuesta.data);
 
-    },function errorCallback(response) {
-         $scope.ListadoUsuarios= [];
-        console.log( response);     
-   });
+  // $http.get('Datos/usuarios')
+  // .then(function(respuesta) {       
+
+  //         $scope.ListadoProductos = respuesta.data;
+  //          console.log(respuesta.data);
+
+  //       },function errorCallback(response) {
+  //           $scope.ListadoProductos= [];
+  //           console.log( response);
+
+  //     });
+ 
+  // $http.get('PHP/nexo.php', { params: {accion :"traer"}})
+  // .then(function(respuesta) {       
+
+  //        $scope.ListadoUsuarios = respuesta.data.listado;
+  //        console.log(respuesta.data);
+
+  //   },function errorCallback(response) {
+  //        $scope.ListadoUsuarios= [];
+  //       console.log( response);     
+  //  });
 
   $scope.Borrar=function(usuario){
     console.log("borrar"+usuario);
@@ -212,6 +255,8 @@ console.log( JSON.stringify(usuario));
 //Fin controller GrillaUsuario
 
 
+
+ //CONTROLLER DEl Login
 
 app.controller('controlLogin', function($scope, $http, $auth, $state) {
   
@@ -264,4 +309,80 @@ app.controller('controlLogin', function($scope, $http, $auth, $state) {
       $state.go("altaUser");
     };
   }
+});
+
+
+//
+// EMPIEZAN LOS SERVICIOS
+//
+
+app.factory('FactoryProducto', function(ServicioProducto){
+  var producto = {
+   
+    mostrarNombre:function(dato){
+      
+     return ServicioProducto.retornarProductos().then(function(respuesta){
+       
+        return respuesta;
+      });
+    },
+    // mostrarapellido:function(){
+    //   console.log("soy otra funcion de factory");
+    // }
+}
+  return producto;
+
+});
+
+app.factory('FactoryUsuario', function(ServicioUsuario){
+  var persona = {
+   
+    mostrarNombre:function(dato){
+      
+     return ServicioUsuario.retornarUsuarios().then(function(respuesta){
+        console.log("estoy en el app.factory");
+        return respuesta;
+      });
+    },
+    mostrarapellido:function(){
+     console.log("soy otra funcion de factory");
+    }
+}
+  return persona;
+
+});
+
+//Siguen a un patrón Singleton
+app.service('ServicioProducto', function($http){ //ESTO ES PARA PRODUCTOS
+  var listado;
+
+  this.retornarProductos = function(){
+
+       return $http.get('Datos/productos')
+                    .then(function(respuesta) 
+                    {     
+                      console.log(respuesta.data);
+                      return respuesta.data;
+                    });
+                  };
+
+                  //return listado;
+});
+
+
+
+app.service('ServicioUsuario', function($http){
+  var listado;
+
+  this.retornarUsuarios = function(){
+
+       return $http.get('Datos/usuarios')
+                    .then(function(respuesta) 
+                    {     
+                      console.log(respuesta.data);
+                      return respuesta.data;
+                    });
+                  };
+
+                  //return listado;
 });

@@ -29,17 +29,25 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `mislocales` (
 `id` int(11) NOT NULL,
   `nombre` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  `porcentaje` int(50) COLLATE utf8_spanish2_ci NOT NULL
+  `localidad` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
+  `mes` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `anio` int(11) COLLATE utf8_spanish2_ci NOT NULL,
+  `porcentaje` int(11) COLLATE utf8_spanish2_ci NOT NULL,
+  `puno` ENUM('si', 'no', '') ,
+  `pdos` ENUM('si', 'no', '') ,
+  `ptres` ENUM('si', 'no', '') ,
+  `pcuatro` ENUM('si', 'no', '')
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `mislocales`
 --
 
-INSERT INTO `mislocales` (`id`, `nombre`, `porcentaje`) VALUES
-(1, 'Hoyts Quilmes', '90'),
-(2, 'McDonalds', '60'),
-(3, 'Garbarino', '25');
+INSERT INTO `mislocales` (`id`, `nombre`, `localidad`, `mes` , `anio` , `porcentaje`, `puno`, `pdos`, `ptres`, `pcuatro`) VALUES
+(1, 'Hoyts', 'Quilmes', 'Octubre' , '2016', '0', '', '', '', ''),
+(2, 'McDonalds', 'CABA', 'Octubre' , '2016', '0', '', '', '', ''),
+(3, 'Garbarino', 'Quilmes', 'Octubre' , '2016','0', '', '', '', ''),
+(4, 'Cinema Village', 'Avellaneda', 'Octubre' , '2016','0', '', '', '', '');
 
 -- --------------------------------------------------------
 

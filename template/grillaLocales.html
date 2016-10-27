@@ -1,0 +1,53 @@
+  <div class="container">
+	  	<div class="page-header">
+	  		<center><h1>Locales</h1> </center>     
+	  	</div>	           
+	  	<div class="CajaInicio animated pulse">
+	  		<h1>Listado de Locales</h1>
+
+	  		 <input type="search" placeholder="Buscar Productos.." ng-model="mifiltro"></input>
+	  		<table class='table table-hover table-responsive' id="listaProductos">
+	  			<thead>
+	  				<tr>
+
+	  					<th>  Nombre     </th>
+	  					<th>  Localidad     </th>
+	  					<th>  Mes     </th>
+	  					<th>  Año     </th>
+	  					<th>  Porcentaje        </th>	  					
+	  					<th ng-if="esVisible">  BORRAR     </th>
+	  					<th ng-if="esVisible">  MODIFICAR     </th>
+
+	  				</tr> 
+	  			</thead>
+	  			<tr ng-repeat="productos in ListadoProductos | filter:mifiltro as resultado">
+
+
+
+	  				<td>{{productos.nombre}}</td>
+	  				<td>{{productos.porcentaje}}</td>
+
+	  				<td ng-if="esVisible"><button class='btn btn-danger' name='Borrar' ng-click="Borrar(productos.id)">   <span class='glyphicon glyphicon-remove-circle'>&nbsp;</span>Borrar</button></td>
+
+	  				<!-- <td><button class='btn btn-warning' name='Modificar' ng-click="Modificar()"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Modificar</button></td> -->
+
+	  				<td ng-if="esVisible"><button class='btn btn-warning' name='Modificar' ui-sref="modificarProducto({id:productos.id, nombre:productos.nombre, porcentaje:productos.porcentaje})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Modificar</button></td>
+
+
+	  			</tr>
+
+
+	  			<tr ng-if="resultado.length == 0">
+
+	  				<td></td>							
+	  				<td>No existen productos con esos datos..</td>
+	  				<td></td>
+	  				<td></td>
+	  				<td></td>										
+	  				<td></td>
+
+	  			</tr>
+	  		</table>
+	  	</div>				
+	  </div>
+	</div>

@@ -71,9 +71,9 @@ class Usuario
 		if($id != NULL){
 			$obj = Padron::TraerUnUsuario($id);
 			
+			$this->id = $id;
 			$this->correo = $obj->correo;
 			$this->nombre = $obj->nombre;
-			$this->id = $id;
 			$this->clave = $obj->clave;
 			$this->tipo = $obj->tipo;
 			$this->foto = $obj->foto;

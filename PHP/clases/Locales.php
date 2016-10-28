@@ -1,6 +1,6 @@
 <?php
 require_once"AccesoDatos.php";
-class Lacal
+class Locales
 {
 //--------------------------------------------------------------------------------//
 //--ATRIBUTOS
@@ -140,7 +140,7 @@ class Lacal
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerUnProducto(:id)");
 		$consulta->bindValue(':id', $idParametro, PDO::PARAM_INT);
 		$consulta->execute();
-		$productoBuscado= $consulta->fetchObject('local');
+		$productoBuscado= $consulta->fetchObject('locales');
 		return $productoBuscado;	
 					
 	}
@@ -148,11 +148,11 @@ class Lacal
 	public static function TraerTodosLosLocales()
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		$consulta =$objetoAccesoDato->RetornarConsulta("select * from mislocales");
+		$consulta =$objetoAccesoDato->RetornarConsulta("SELECT * FROM mislocales");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL TraerTodasLasProductos() ");
 		$consulta->execute();			
-		$arrProductos= $consulta->fetchAll(PDO::FETCH_CLASS, "local");	
-		return $arrProductos;
+		$arrLocales= $consulta->fetchAll(PDO::FETCH_CLASS, "locales");	
+		return $arrLocales;
 	}
 	
 	public static function BorrarLocal($idParametro)

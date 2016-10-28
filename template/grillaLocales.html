@@ -1,37 +1,47 @@
   <div class="container">
 	  	<div class="page-header">
-	  		<center><h1>Locales</h1> </center>     
+	  		<center><h1>{{DatoTest}}</h1> </center>     
 	  	</div>	           
 	  	<div class="CajaInicio animated pulse">
 	  		<h1>Listado de Locales</h1>
 
-	  		 <input type="search" placeholder="Buscar Productos.." ng-model="mifiltro"></input>
-	  		<table class='table table-hover table-responsive' id="listaProductos">
+	  		 <input type="search" placeholder="Buscar Local.." ng-model="mifiltro" class="buscar"></input>
+	  		<table class='table table-hover table-responsive' id="ListadoLocales">
 	  			<thead>
 	  				<tr>
 
 	  					<th>  Nombre     </th>
-	  					<th>  Localidad     </th>
-	  					<th>  Mes     </th>
-	  					<th>  Año     </th>
-	  					<th>  Porcentaje        </th>	  					
-	  					<th ng-if="esVisible">  BORRAR     </th>
-	  					<th ng-if="esVisible">  MODIFICAR     </th>
-
+	  					<th ng-if="esVisible.user">  Localidad     </th> <!-- solamente el usuario -->
+	  					<th ng-if="esVisible.adminClient">  Mes     </th> <!-- cliente y el admin -->
+	  					<th ng-if="esVisible.adminClient">  Año     </th> <!-- cliente y el admin -->
+	  					<th ng-if="esVisible.adminClient">  Porcentaje   </th> <!-- cliente y el admin -->
+	  					<th ng-if="esVisible.user">  Ubicación    </th> <!-- solamente el usuario -->
+	  					<th ng-if="esVisible.user">  Realizar encuesta   </th> <!-- solamente el usuario -->
+	  					<th ng-if="esVisible.adminClient">  Ver        </th>	 <!-- cliente y el admin --> 
+	  					<th ng-if="esVisible.admin">  BORRAR     </th> <!-- admin -->
+<!-- 	  					<th ng-if="esVisibleUser">  MODIFICAR     </th> solamente el usuario -->
 	  				</tr> 
 	  			</thead>
-	  			<tr ng-repeat="productos in ListadoProductos | filter:mifiltro as resultado">
+	  			<tr ng-repeat="local in ListadoLocales | filter:mifiltro as resultado">
 
 
 
-	  				<td>{{productos.nombre}}</td>
-	  				<td>{{productos.porcentaje}}</td>
+	  				<td>{{local.nombre}}</td>
+	  				<td ng-if="esVisible.user">{{local.localidad}}</td>
+	  				<td ng-if="esVisible.adminClient">{{local.mes}}</td>
+	  				<td ng-if="esVisible.adminClient">{{local.anio}}</td>
+	  				<td ng-if="esVisible.adminClient">{{local.porcentaje}}</td>
 
-	  				<td ng-if="esVisible"><button class='btn btn-danger' name='Borrar' ng-click="Borrar(productos.id)">   <span class='glyphicon glyphicon-remove-circle'>&nbsp;</span>Borrar</button></td>
+	  				<td ng-if="esVisible.user"><button class='btn btn-info' name='Ubicacion' ui-sref="GoogleMaps">   <span class='glyphicon glyphicon-map-marker'>&nbsp;</span>Ubicación</button></td>
+
+	  				<td ng-if="esVisible.user"><button class='btn btn-primary' name='formulario' ui-sref="obtenerLocal({})">   <span class='glyphicon glyphicon-edit'>&nbsp;</span>Encuesta</button></td>
+
+	  				<td ng-if="esVisible.adminClient"><button class='btn btn-warning' name='Modificar' ui-sref="modificarLocal({id:locales.id, nombre:locales.nombre, porcentaje:locales.porcentaje})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Formulario</button></td>
+
+	  				<td ng-if="esVisible.admin"><button class='btn btn-danger' name='Borrar' ng-click="Borrar(locales.id)">   <span class='glyphicon glyphicon-remove-circle'>&nbsp;</span>Borrar</button></td>
 
 	  				<!-- <td><button class='btn btn-warning' name='Modificar' ng-click="Modificar()"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Modificar</button></td> -->
 
-	  				<td ng-if="esVisible"><button class='btn btn-warning' name='Modificar' ui-sref="modificarProducto({id:productos.id, nombre:productos.nombre, porcentaje:productos.porcentaje})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Modificar</button></td>
 
 
 	  			</tr>

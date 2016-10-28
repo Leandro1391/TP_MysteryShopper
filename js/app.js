@@ -36,6 +36,14 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
+  .state('grillaLocal', {
+    url: '/grillaLocal',
+    views: {
+      'principal': { templateUrl: 'template/grillaLocales.html',controller: 'controlGrillaLocal' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
+    }
+  })
+
 
   .state('login', {
     url: '/login',
@@ -106,7 +114,83 @@ app.controller('controlMenu', function($scope, $http, $auth, $state) {
 
 
 
-  //APP Contro USUARIO
+/////////////////////////////////////
+//APP CONTROLLER LOCAL //////////////
+////////////////////////////////////
+
+
+app.controller('controlGrillaLocal', function($scope, $http, $state, $auth, FactoryLocal) {
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="GRILLA LOCALES";
+
+    //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
+    $scope.esVisible={
+      adminClient: false,
+      admin: false,
+      user: false
+    }; //PARA EL NG-IF
+
+    if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="cliente")
+    {
+      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisible.adminClient = true;
+      if ($auth.getPayload().tipo=="administrador") 
+      {
+        $scope.esVisible.admin=true;
+      }
+      else
+        $scope.esVisible.admin=false;
+    }
+    else
+    {
+      console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisible.user=true;
+    }
+
+    //FactoryLocal.mostrarapellido();
+
+    FactoryLocal.mostrarNombre("otro").then(function(respuesta){
+
+     $scope.ListadoLocales=respuesta;
+ 
+   });
+    //$scope.Listadopersonas =factory.fu();
+    //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
+      $scope.Borrar=function(id){
+    console.log("borrar"+id);
+       $http.delete('Datos/locales/'+id)
+     .then(function(respuesta) {   
+    // debugger;    
+             //aca se ejetuca si retorno sin errores        
+             console.log(respuesta.data);
+
+            $http.get('Datos/locales')
+            .then(function(respuesta) {       
+
+                   $scope.ListadoLocales = respuesta.data;
+                   console.log(respuesta.data);
+
+              },function errorCallback(response) {
+                   $scope.ListadoLocales= [];
+                  console.log( response);
+
+      });
+
+        },function errorCallback(response) {        
+            //aca se ejecuta cuando hay errores
+            console.log( response);           
+        });
+
+
+  }
+  }else{$state.go("login");}
+
+});
+
+  ////////////////////
+  //APP Controller USUARIO
+  ////////////////////
 
 app.controller('controlUsuario')
 
@@ -125,7 +209,7 @@ app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
   .then(function(respuesta) {       
 
           $scope.usuario = respuesta.data;
-           // console.log("linea 132 " +respuesta.data);
+           
 
         },function errorCallback(response) {
             $scope.usuario= [];
@@ -207,11 +291,11 @@ FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
   // $http.get('Datos/usuarios')
   // .then(function(respuesta) {       
 
-  //         $scope.ListadoProductos = respuesta.data;
+  //         $scope.ListadoUsuarioa = respuesta.data;
   //          console.log(respuesta.data);
 
   //       },function errorCallback(response) {
-  //           $scope.ListadoProductos= [];
+  //           $scope.ListadoUsuarioa= [];
   //           console.log( response);
 
   //     });
@@ -251,8 +335,7 @@ FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
       });
   }// $scope.Borrar
 
-});
-//Fin controller GrillaUsuario
+});                                       //Fin controller GrillaUsuario
 
 
 
@@ -316,12 +399,13 @@ app.controller('controlLogin', function($scope, $http, $auth, $state) {
 // EMPIEZAN LOS SERVICIOS
 //
 
-app.factory('FactoryProducto', function(ServicioProducto){
-  var producto = {
+app.factory('FactoryLocal', function(ServicioLocal){
+
+  var local = {
    
     mostrarNombre:function(dato){
       
-     return ServicioProducto.retornarProductos().then(function(respuesta){
+     return ServicioLocal.retornarLocales().then(function(respuesta){
        
         return respuesta;
       });
@@ -330,7 +414,7 @@ app.factory('FactoryProducto', function(ServicioProducto){
     //   console.log("soy otra funcion de factory");
     // }
 }
-  return producto;
+  return local;
 
 });
 
@@ -353,12 +437,12 @@ app.factory('FactoryUsuario', function(ServicioUsuario){
 });
 
 //Siguen a un patrón Singleton
-app.service('ServicioProducto', function($http){ //ESTO ES PARA PRODUCTOS
+app.service('ServicioLocal', function($http){ //ESTO ES PARA LOCALES
   var listado;
 
-  this.retornarProductos = function(){
+  this.retornarLocales = function(){
 
-       return $http.get('Datos/productos')
+       return $http.get('Datos/locales')
                     .then(function(respuesta) 
                     {     
                       console.log(respuesta.data);

@@ -8,7 +8,7 @@
  */
 
 require '../PHP/clases/AccesoDatos.php';
-require '../PHP/clases/Productos.php';
+require '../PHP/clases/Locales.php';
 require '../PHP/clases/usuario.php';
 require '../vendor/autoload.php';
 /**
@@ -41,36 +41,43 @@ $app->get('/hello[/{name}]', function ($request, $response, $args) {
 
 
 
-$app->get('/productos[/]', function ($request, $response, $args) {
+$app->get('/locales[/]', function ($request, $response, $args) {
 	
-	$listado = Producto::TraerTodosLosProductos();
+	$listado = Locales::TraerTodosLosLocales();
 	return json_encode($listado);
 	var_dump($listado);
-   
 });
 
-$app->delete('/productos/{id}', function ($request, $response, $args) {
+$app->get('/locales/{id}', function ($request, $response, $args) {
 	
-	$listado=Producto::BorrarProducto($args['id']);
+	$unLocal = Locales::TraerUnLocal($args['id']);
+	return json_encode($unLocal);
+	var_dump($unLocal);
+});
+
+
+$app->delete('/locales/{id}', function ($request, $response, $args) {
+	
+	$listado=Locales::BorrarLocal($args['id']);
    $response->write(json_decode($listado)); 
     return $response;
 });
 
-$app->post('/productos', function ($request,$args) {
+$app->post('/locales', function ($request,$args) {
 	echo "estoy en index alta php";
 	$datos=json_decode($request->getBody());
 
 	var_dump($datos);
-	Producto::InsertarProducto($datos);
+	Locales::InsertarLocal($datos);
 	
 });
-$app->put('/productos',function($request){
+$app->put('/locales',function($request){
 	echo "estoy index modificar.php";
-	$unproducto=json_decode($request->getBody());
+	$unlocal=json_decode($request->getBody());
 	//$unUsuario->id_usuario=$id;
-	Producto::ModificarProducto($unproducto);
+	Locales::ModificarLocal($unlocal);
 	
-	var_dump($unproducto);
+	var_dump($unlocal);
 
 });
 

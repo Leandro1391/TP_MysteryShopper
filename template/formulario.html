@@ -1,0 +1,23 @@
+<div class="container">
+		<div class="page-header">
+			<center> <h1>{{DatoTest}}</h1>   </center>     
+		</div>
+		<div class="CajaInicio animated bounceInRight">
+			<h1>Alta Productos </h1>
+
+			<form id="FormIngreso"  enctype="multipart/form-data" >
+				
+				<input type="text" name="nombre" ng-model="producto.nombre" placeholder="ingrese nombre" value="" /> <span id="lblNombre" style="display:none;color:#FF0000;width:1%;float:right;font-size:80">*</span>
+
+				<input type="text" name="porcentaje" ng-model="producto.porcentaje" placeholder="ingrese porcentaje" value=""     /> 
+				<span id="lblDni" style="display:none;color:#FF0000;width:1%;float:right;font-size:80">*</span>
+				
+				<a class="btn btn-info " name="guardar" ng-click="Guardar()" ><span class="glyphicon glyphicon-save">&nbsp;</span>Guardar</a>
+					
+				<input type="hidden" value="" id="idParaModificar" name="agregar" />
+				<input type="hidden" value="" id="hdnAgregar" name="agregar" />
+				</div>
+
+			</form>
+	</div>
+	</div>

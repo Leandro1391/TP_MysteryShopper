@@ -98,204 +98,29 @@ $app->get('/usuarios/{id}', function ($request, $response, $args) {
 	var_dump($user);
 });
 
-// $app->get("/usuarios/", function() use($app)
-// {
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('call TraerTodasLasPersonas()');
+$app->delete('/usuarios/{id}', function ($request, $response, $args) {
 	
-// 	$sentencia->execute();
-// 	$res = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-		
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status(200);
-// 	$app->response->body(json_encode($res));
-// });
+	$listado=usuario::BorrarUsuario($args['id']);
+   $response->write(json_decode($listado)); 
+    return $response;
+});
 
-// $app->get("/usuarios/:id", function($id) use($app)
-// {
-// 	try{
-// 		$cnn = Conexion::DameAcceso();
-// 		$sentencia = $cnn->prepare('call TraerUnaPersona(?)');
-		
-// 		$sentencia->execute(array($id));
-// 		$res = $sentencia->fetchAll(PDO::FETCH_OBJ);
+$app->post('/usuarios', function ($request,$args) {
+	echo "estoy en index alta php";
+	$datos=json_decode($request->getBody());
 
-// 		$app->response->headers->set("Content-type", "application/json");
-// 		$app->response->status(200);
-// 		$app->response->body(json_encode($res));
-// 	}
-// 	catch(PDOException $e)
-// 	{
-// 		echo "Error: " . $e->getMessage();
-// 	}
-// });
+	var_dump($datos);
+	usuario::InsertarUsuario($datos);
+});
 
-// // POST: Para crear recursos
-// $app->post("/usuarios/", function() use($app)
-// {
-// 	$nombre = $app->request->post("nombre");
-// 	$dni = $app->request->post("dni");
-// 	$apellido = $app->request->post("apellido");
-// 	$foto = "pordefecto.png";//$app->request->post("foto");
-
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('CALL InsertarPersona (?,?,?,?)');
+$app->put('/usuarios',function($request){
+	echo "estoy index modificar.php";
+	$unsuario=json_decode($request->getBody());
+	//$unUsuario->id_usuario=$id;
+	usuario::ModificarUsuario($unsuario);
 	
-	
-// 	$status = 200;
-// 	if ($sentencia->execute(array($nombre, $apellido, $dni, $foto)))
-// 		$res = array("rta" => true);	
-// 	else{
-// 		$res = array("rta" => false);
-// 		$status = 500;
-// 	}
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status($status);
-// 	$app->response->body(json_encode(json_encode($res)));
-// });
+	var_dump($unusuario);
 
-
-// // PUT: Para editar recursos
-// $app->put("/usuarios/", function() use($app)
-// {
-// 	$nombre = $app->request->put("nombre");
-// 	$id = $app->request->put("id");
-// 	$apellido = $app->request->put("apellido");
-// 	$foto = $app->request->put("foto");
-
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('CALL ModificarPersona(?,?,?,?)');
-// 	$status = 200;
-// 	if ($sentencia->execute(array($id, $nombre, $apellido, $foto)))
-// 		$res = array("rta" => true);	
-// 	else{
-// 		$res = array("rta" => false);
-// 		$status = 500;
-// 	}
-		
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status($status);
-// 	$app->response->body(json_encode($res));
-// });
-
-
-// // DELETE: Para eliminar recursos
-// $app->delete("/usuarios/:id", function($id) use($app)
-// {
-// 	try{
-// 		$cnn = Conexion::DameAcceso();
-// 		$sentencia = $cnn->prepare('CALL BorrarPersona(?)');
-		
-// 		$sentencia->execute(array($id));
-
-// 		$app->response->headers->set("Content-type", "application/json");
-// 		$app->response->status(200);
-// 		$app->response->body(json_encode(array("res" => 111)));
-// 	}
-// 	catch(PDOException $e)
-// 	{
-// 		echo "Error: " . $e->getMessage();
-// 	}
-// });
-
-// $app->get("/usuarios/", function() use($app)
-// {
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('call TraerTodasLasPersonas()');
-	
-// 	$sentencia->execute();
-// 	$res = $sentencia->fetchAll(PDO::FETCH_ASSOC);
-		
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status(200);
-// 	$app->response->body(json_encode($res));
-// });
-
-// $app->get("/usuarios/:id", function($id) use($app)
-// {
-// 	try{
-// 		$cnn = Conexion::DameAcceso();
-// 		$sentencia = $cnn->prepare('call TraerUnaPersona(?)');
-		
-// 		$sentencia->execute(array($id));
-// 		$res = $sentencia->fetchAll(PDO::FETCH_OBJ);
-
-// 		$app->response->headers->set("Content-type", "application/json");
-// 		$app->response->status(200);
-// 		$app->response->body(json_encode($res));
-// 	}
-// 	catch(PDOException $e)
-// 	{
-// 		echo "Error: " . $e->getMessage();
-// 	}
-// });
-
-// // POST: Para crear recursos
-// $app->post("/usuarios/", function() use($app)
-// {
-// 	$nombre = $app->request->post("nombre");
-// 	$dni = $app->request->post("dni");
-// 	$apellido = $app->request->post("apellido");
-// 	$foto = "pordefecto.png";//$app->request->post("foto");
-
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('CALL InsertarPersona (?,?,?,?)');
-	
-	
-// 	$status = 200;
-// 	if ($sentencia->execute(array($nombre, $apellido, $dni, $foto)))
-// 		$res = array("rta" => true);	
-// 	else{
-// 		$res = array("rta" => false);
-// 		$status = 500;
-// 	}
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status($status);
-// 	$app->response->body(json_encode(json_encode($res)));
-// });
-
-
-// // PUT: Para editar recursos
-// $app->put("/usuarios/", function() use($app)
-// {
-// 	$nombre = $app->request->put("nombre");
-// 	$id = $app->request->put("id");
-// 	$apellido = $app->request->put("apellido");
-// 	$foto = $app->request->put("foto");
-
-// 	$cnn = Conexion::DameAcceso();
-// 	$sentencia = $cnn->prepare('CALL ModificarPersona(?,?,?,?)');
-// 	$status = 200;
-// 	if ($sentencia->execute(array($id, $nombre, $apellido, $foto)))
-// 		$res = array("rta" => true);	
-// 	else{
-// 		$res = array("rta" => false);
-// 		$status = 500;
-// 	}
-		
-// 	$app->response->headers->set("Content-type", "application/json");
-// 	$app->response->status($status);
-// 	$app->response->body(json_encode($res));
-// });
-
-
-// // DELETE: Para eliminar recursos
-// $app->delete("/usuarios/:id", function($id) use($app)
-// {
-// 	try{
-// 		$cnn = Conexion::DameAcceso();
-// 		$sentencia = $cnn->prepare('CALL BorrarPersona(?)');
-		
-// 		$sentencia->execute(array($id));
-
-// 		$app->response->headers->set("Content-type", "application/json");
-// 		$app->response->status(200);
-// 		$app->response->body(json_encode(array("res" => 111)));
-// 	}
-// 	catch(PDOException $e)
-// 	{
-// 		echo "Error: " . $e->getMessage();
-// 	}
-// });
+});
 
 $app->run();

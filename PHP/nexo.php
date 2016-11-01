@@ -6,7 +6,7 @@ require_once("clases/usuario.php");
 if ( !empty( $_FILES ) ) 
 {
     $temporal = $_FILES[ 'file' ][ 'tmp_name' ];
-    $ruta = "..". DIRECTORY_SEPARATOR . 'fotos' . DIRECTORY_SEPARATOR . $_FILES[ 'file' ][ 'name' ];
+    $ruta = "..". DIRECTORY_SEPARATOR . 'imagenes' . DIRECTORY_SEPARATOR . $_FILES[ 'file' ][ 'name' ];
     move_uploaded_file( $temporal, $ruta );
     echo "correcto";
 }
@@ -38,7 +38,7 @@ else{
 		{
 			if($respuesta->datos->usuario->foto!="pordefecto.png")
 			{
-				unlink("../fotos/".$respuesta->datos->usuario->foto);
+				unlink("../imagenes/".$respuesta->datos->usuario->foto);
 			}
 			Usuario::BorrarUsuario($respuesta->datos->usuario->id);
 			break;
@@ -47,9 +47,9 @@ else{
 		{
 			if($respuesta->datos->usuario->foto!="pordefecto.png")
 			{
-				$rutaVieja="../fotos/".$respuesta->datos->usuario->foto;
+				$rutaVieja="../imagenes/".$respuesta->datos->usuario->foto;
 				$rutaNueva=$respuesta->datos->usuario->dni.".".PATHINFO($rutaVieja, PATHINFO_EXTENSION);
-				copy($rutaVieja, "../fotos/".$rutaNueva);
+				copy($rutaVieja, "../imagenes/".$rutaNueva);
 				unlink($rutaVieja);
 				$respuesta->datos->usuario->foto=$rutaNueva;
 			}
@@ -65,9 +65,9 @@ else{
 		{
 			if($respuesta->datos->usuario->foto!="pordefecto.png")
 			{
-				$rutaVieja="../fotos/".$respuesta->datos->usuario->foto;
+				$rutaVieja="../imagenes/".$respuesta->datos->usuario->foto;
 				$rutaNueva=$respuesta->datos->usuario->dni.".".PATHINFO($rutaVieja, PATHINFO_EXTENSION);
-				copy($rutaVieja, "../fotos/".$rutaNueva);
+				copy($rutaVieja, "../imagenes/".$rutaNueva);
 				unlink($rutaVieja);
 				$respuesta->datos->usuario->foto=$rutaNueva;
 			}

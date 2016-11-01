@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `mislocales` (
   `mes` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
   `anio` int(11) COLLATE utf8_spanish2_ci NOT NULL,
   `porcentaje` int(11) COLLATE utf8_spanish2_ci NOT NULL,
+  `empleado` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
   `puno` ENUM('si', 'no', '') ,
   `pdos` ENUM('si', 'no', '') ,
   `ptres` ENUM('si', 'no', '') ,
@@ -43,11 +44,11 @@ CREATE TABLE IF NOT EXISTS `mislocales` (
 -- Volcado de datos para la tabla `mislocales`
 --
 
-INSERT INTO `mislocales` (`id`, `nombre`, `localidad`, `mes` , `anio` , `porcentaje`, `puno`, `pdos`, `ptres`, `pcuatro`) VALUES
-(1, 'Hoyts', 'Quilmes', 'Octubre' , '2016', '0', '', '', '', ''),
-(2, 'McDonalds', 'CABA', 'Octubre' , '2016', '0', '', '', '', ''),
-(3, 'Garbarino', 'Quilmes', 'Octubre' , '2016','0', '', '', '', ''),
-(4, 'Cinema Village', 'Avellaneda', 'Octubre' , '2016','0', '', '', '', '');
+INSERT INTO `mislocales` (`id`, `nombre`, `localidad`, `mes` , `anio` , `porcentaje`, `empleado`, `puno`, `pdos`, `ptres`, `pcuatro`) VALUES
+(1, 'Hoyts', 'Quilmes', 'Octubre' , '2016', '75','Julieta Rivas', 'si', 'no', 'si', 'si'),
+(2, 'McDonalds', 'CABA', 'Octubre' , '2016', '50','José López', 'no', 'no', 'si', 'si'),
+(3, 'Garbarino', 'Quilmes', 'Octubre' , '2016','100','Federico Luis', 'si', 'si', 'si', 'si'),
+(4, 'Cinema Village', 'Avellaneda', 'Octubre' , '2016', '25', 'Emanuel Pérez', 'no', 'no', 'si', 'no');
 
 -- --------------------------------------------------------
 
@@ -68,12 +69,12 @@ CREATE TABLE IF NOT EXISTS `misusuarios` (
 -- Volcado de datos para la tabla `misusuarios`
 --
 
-INSERT INTO `misusuarios` (`id`, `correo`, `nombre`, `clave`, `tipo`, `foto`) VALUES
-(1, 'user@user.com', 'roger', '123', 'usuario', '333333.jpg'),
+INSERT INTO `misusuarios` (`id`, `correo`, `nombre`, `clave`, `tipo`,`foto`) VALUES
+(1, 'user@user.com', 'roger', '123', 'usuario','333333.jpg'),
 (2, 'admin@admin.com', 'admin', '321', 'administrador', 'pordefecto.png'),
-(4, 'cliente@cliente.com', 'julia', '987', 'cliente', '888888.jpg'),
-(5, 'fox@fox.com', 'michael', 'abcd', 'usuario', '444444.jpg'),
-(6, 'jobs@jobs.com', 'steve', '987', 'cliente', '111111.jpg'),
+(4, 'cliente@cliente.com', 'julia', '987', 'cliente',  '888888.jpg'),
+(5, 'fox@fox.com', 'michael', 'abcd', 'usuario','444444.jpg'),
+(6, 'jobs@jobs.com', 'steve', '987', 'cliente','111111.jpg'),
 (7, 'bulzara@bulzara.com', 'freddy', 'qwer', 'cliente', '999999.jpg'),
 (8, 'cruise@cruise.com', 'tom', '987', 'cliente', '777777.jpg');
 

@@ -61,6 +61,10 @@ li.btn {
     z-index: 1;
 }
 
+.centrar  {
+text-align:center;
+}
+
 body {
   margin: 0 auto;
   color:#333;

@@ -21,6 +21,18 @@ require '../vendor/autoload.php';
  */
 $app = new Slim\App();
 
+$c = $app->getContainer();
+$c['errorHandler'] = function ($c) {
+    return function ($request, $response, $exception) use ($c) {
+        return $c['response']->withStatus(500)
+                             ->withHeader('Content-Type', 'text/html')
+                             ->write('Something went wrong!');
+    };
+  };
+
+
+
+
 /**
  * Step 3: Define the Slim application routes
  *
@@ -64,13 +76,15 @@ $app->delete('/locales/{id}', function ($request, $response, $args) {
 });
 
 $app->post('/locales', function ($request,$args) {
-	echo "estoy en index alta php";
-	$datos=json_decode($request->getBody());
 
+	echo "estoy en index alta php";
+
+	$datos=json_decode($request->getBody());
 	var_dump($datos);
 	Locales::InsertarLocal($datos);
 	
 });
+
 $app->put('/locales',function($request){
 	echo "estoy index modificar.php";
 	$unlocal=json_decode($request->getBody());

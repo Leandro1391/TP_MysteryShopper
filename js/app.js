@@ -28,10 +28,18 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
-  .state('altaLocal', {
-    url: '/altaLocal',
+  .state('altaEncuesta', {
+    url: '/altaEncuesta',
     views: {
-      'principal': {templateUrl: 'template/altaLocal.html', controller: 'controlAltaLocal' },
+      'principal': {templateUrl: 'template/altaEncuesta.html', controller: 'controlAltaEncuesta' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
+    }
+  })
+
+  .state('grillaEncuesta', {
+    url: '/grillaEncuesta',
+    views: {
+      'principal': {templateUrl: 'template/grillaEncuesta.html', controller: 'controlGrillaEncuesta' },
       'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
     }
   })
@@ -60,10 +68,18 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
-  .state('verFormulario', {
-    url: '/verFormulario/{id}?:nombre:porcentaje',
+  .state('modificarLocal', {
+      url: '/modificarLocal/{id}?:nombre:localidad:mes:anio:porcentaje:empleado:puno:pdos:ptres:pcuatro',
      views: {
-      'principal': { templateUrl: 'template/formulario.html',controller: 'controlVerFormulario' },
+      'principal': { templateUrl: 'template/ver.html',controller: 'controlModificarLocal' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
+    }
+  })
+
+  .state('verFormulario', {
+    url: '/verFormulario/{id}?:nombre:localidad',
+     views: {
+      'principal': { templateUrl: 'template/encuesta.html',controller: 'controlVerFormulario' },
       'menuSuperior': {templateUrl: 'template/menuSuperior.html'}
     }
   })
@@ -144,12 +160,183 @@ app.controller('controlMenu', function($scope, $http, $auth, $state) {
 
 });
 
-app.controller('controlModificacion', function($scope, $http, $state, $stateParams, FileUploader)//, $routeParams, $location)
+
+
+app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
+  $scope.usuario={};
+  $scope.usuario.id = $auth.getPayload().id;
+  $scope.usuario.tipo=$auth.getPayload().tipo;
+  //$scope.usuario.foto=$auth.getPayload().foto;   tengo que traer la foto con otro método
+
+  //SLIM
+
+  $http.get('Datos/usuarios/'+ $scope.usuario.id)
+  .then(function(respuesta) {       
+
+          $scope.usuario = respuesta.data;
+           
+
+        },function errorCallback(response) {
+            $scope.usuario= [];
+            console.log( response);
+
+    });
+
+  // console.log("Estoy en el menu Superior")
+  // console.log($auth.getPayload());
+
+  if($auth.isAuthenticated())
+  {
+    //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
+
+    // console.log("estoy en el if is Authenticated");
+
+    $scope.esVisible={}; //PARA EL NG-IF ADMIN Y CLIENTE
+    if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="cliente")
+    {
+      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisible=true;
+    }
+    else
+    {
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisible=false;
+    }
+
+    $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
+    $scope.esVisibleAdminClient={}; //PARA EL NG-IF SOLO ADMIN y CLIENTE
+
+    if($auth.getPayload().tipo=="administrador")
+    {
+      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisibleAdmin=true;
+    }
+    else
+    {
+      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
+      $scope.esVisibleAdmin=false;
+    }
+
+    // console.info($auth.isAuthenticated(), $auth.getPayload());
+    // $scope.DatoTest="**Menu**";
+    // $scope.usuario=$auth.getPayload();
+
+    $scope.Logout=function()
+    {
+      $auth.logout()
+      .then(function()
+      {
+        console.log("estoy dentro del logout");
+        $state.go("login");
+      });
+    };
+  }
+  else{$state.go("login");}
+
+});
+
+app.controller('controlModificarLocal', function($scope, $http, $state, $auth, FileUploader, $stateParams) {
+
+  $scope.local={};
+  $scope.DatoTest="**Modificar**";
+  $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
+  $scope.uploader.queueLimit = 1;
+  $scope.local.id=$stateParams.id;
+  $scope.local.nombre=$stateParams.nombre;
+  $scope.local.localidad=$stateParams.localidad;
+  $scope.local.mes=$stateParams.mes;
+  $scope.local.anio=$stateParams.anio;
+  $scope.local.porcentaje=$stateParams.porcentaje;
+  $scope.local.empleado=$stateParams.empleado;
+  $scope.local.puno=$stateParams.puno;
+  $scope.local.pdos=$stateParams.pdos;
+  $scope.local.ptres=$stateParams.ptres;
+  $scope.local.pcuatro=$stateParams.pcuatro;
+
+
+
+  $scope.uploader.onSuccessItem=function(item, response, status, headers)
+  {
+    $http.post('PHP/nexoLocal.php', { datos: {accion :"modificar",local:$scope.local}})
+        .then(function(respuesta) 
+        {
+          //aca se ejetuca si retorno sin errores       
+          console.log(respuesta.data);
+          $state.go("grillaLocales");
+        },
+        function errorCallback(response)
+        {
+          //aca se ejecuta cuando hay errores
+          console.log( response);           
+        });
+    console.info("Ya guardé el archivo.", item, response, status, headers);
+  };
+
+
+});
+
+
+//////////////////////////////////////////////////
+////////////////CONTROL ENCUESTAS/////////////////
+//////////////////////////////////////////////////
+
+app.controller('controlGrillaEncuesta', function($scope, $http, $state, $auth, FactoryLocal) {
+
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="ENCUESTAS";
+
+
+    FactoryLocal.mostrarNombre("otro").then(function(respuesta){
+
+     $scope.ListadoLocales=respuesta;
+ 
+   });
+    //$scope.Listadopersonas =factory.fu();
+    //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
+      $scope.Borrar=function(id){
+      console.log("borrar"+id);
+       $http.delete('Datos/locales/'+id)
+     .then(function(respuesta) {   
+    // debugger;    
+             //aca se ejetuca si retorno sin errores        
+             console.log(respuesta.data);
+
+            $http.get('Datos/locales')
+            .then(function(respuesta) {       
+
+                   $scope.ListadoLocales = respuesta.data;
+                   console.log(respuesta.data);
+
+              },function errorCallback(response) {
+                   $scope.ListadoLocales= [];
+                  console.log( response);
+
+      });
+
+        },function errorCallback(response) {        
+            //aca se ejecuta cuando hay errores
+            console.log( response);           
+        });
+
+
+  }
+
+  }else{$state.go("login");}
+
+});
+
+
+/////////////////////////////////////////////////////////////
+////////////CONTROLLER MODIFICAR USUARIO/////////////////////
+/////////////////////////////////////////////////////////////
+
+
+app.controller('controlModificacion', function($scope, $http, $state, $stateParams, FileUploader)
 {
   $scope.usuario={};
-  $scope.DatoTest="MODIFICA DATOS";
-  debugger;
-  $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
+  $scope.DatoTest="MODIFICAR DATOS";
+  $scope.uploader = new FileUploader({url: 'Datos/index.php'});
   $scope.uploader.queueLimit = 1;
   $scope.usuario.id=$stateParams.id;
   $scope.usuario.correo=$stateParams.correo;
@@ -158,8 +345,8 @@ app.controller('controlModificacion', function($scope, $http, $state, $statePara
   $scope.usuario.tipo=$stateParams.tipo;
   $scope.usuario.foto=$stateParams.foto;
 
-  $scope.cargarfoto=function(nombrefoto){
 
+  $scope.cargarfoto=function(nombrefoto){
       var direccion="imagenes/"+nombrefoto;  
       $http.get(direccion,{responseType:"blob"})
         .then(function (respuesta){
@@ -240,11 +427,69 @@ app.controller('controlPerfil', function($scope, $http, $auth, $state, cargadoDe
 
 });
 
+/////////////////////////////////////////////////////////////
+////////////CONTROLLER VER Y COMPLETAR ENCUESTA//////////////
+/////////////////////////////////////////////////////////////
 
 
-/////////////////////////////////////
-//APP CONTROLLER LOCAL //////////////
-////////////////////////////////////
+app.controller('controlVerFormulario', function($scope, $http, $auth, $state, $stateParams, FileUploader)
+{
+  debugger;
+  $scope.local={};
+
+  $scope.DatoTest="COMPLETANDO ENCUESTA";
+
+  $scope.uploader = new FileUploader({url: 'PHP/nexoLocal'});
+  $scope.uploader.queueLimit = 1;
+  $scope.local.id=$stateParams.id;
+  $scope.local.nombre=$stateParams.nombre;
+  $scope.local.localidad=$stateParams.localidad;
+  $scope.local.mes=$stateParams.mes;
+  $scope.local.anio=$stateParams.anio;
+  $scope.local.porcentaje=$stateParams.porcentaje;
+  $scope.local.empleado=$stateParams.empleado;
+  $scope.local.puno=$stateParams.puno;
+  $scope.local.pdos=$stateParams.pdos;
+  $scope.local.ptres=$stateParams.ptres;
+  $scope.local.pcuatro=$stateParams.pcuatro;
+
+
+
+
+  $scope.uploader.onSuccessItem=function(item, response, status, headers)
+  {
+    $http.post('PHP/nexoLocal.php', { datos: {accion :"modificar",local:$scope.local}})
+        .then(function(respuesta) 
+        {
+          //aca se ejetuca si retorno sin errores       
+          console.log(respuesta.data);
+          $state.go("grillaLocal");
+        },
+        function errorCallback(response)
+        {
+          //aca se ejecuta cuando hay errores
+          console.log( response);           
+        });
+    console.info("Ya guardé el archivo.", item, response, status, headers);
+  };
+
+
+  $scope.Guardar=function(local)
+  {
+    if($scope.uploader.queue[0].file.name!='pordefecto.png')
+    {
+      var nombreFoto = $scope.uploader.queue[0]._file.name;
+      $scope.local.foto=nombreFoto;
+    }
+    $scope.uploader.uploadAll();
+  }
+});
+
+
+
+//////////////////////////////////////////////////////
+///////////////////APP CONTROLLER LOCAL //////////////
+//////////////////////////////////////////////////////
 
 
 app.controller('controlGrillaLocal', function($scope, $http, $state, $auth, FactoryLocal) {
@@ -279,7 +524,6 @@ app.controller('controlGrillaLocal', function($scope, $http, $state, $auth, Fact
       $scope.esVisible.user=true;
     }
 
-    //FactoryLocal.mostrarapellido();
 
     FactoryLocal.mostrarNombre("otro").then(function(respuesta){
 
@@ -352,6 +596,7 @@ app.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploade
     console.log("usuario a guardar:");
     console.log($scope.usuario);
   }
+
    $scope.uploader.onSuccessItem=function(item, response, status, headers)
   {
     //alert($scope.persona.foto);
@@ -371,106 +616,71 @@ app.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploade
 });
 
 
-  ////////////////////
-  //APP Controller ALTA LOCAL
-  ////////////////////
+  /////////////////////////////////
+  //APP Controller ALTA LOCAL//////
+  /////////////////////////////////
 
-app.controller('controlAltaLocal', function($scope, $http ,$state,  $auth, FileUploader) {
-  $scope.DatoTest="ALTA LOCAL";
-
-  
-
-  //SLIM
-
-  $http.get('Datos/locales/'+ $scope.locales.id)
-  .then(function(respuesta) {       
-
-          $scope.usuario = respuesta.data;
-           
-
-        },function errorCallback(response) {
-            $scope.usuario= [];
-            console.log( response);
-
-    });
-
-});
-
-
- //controller del MENU SUPERIOR
-
-app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
-  $scope.usuario={};
-  $scope.usuario.id = $auth.getPayload().id;
-  $scope.usuario.tipo=$auth.getPayload().tipo;
-  //$scope.usuario.foto=$auth.getPayload().foto;   tengo que traer la foto con otro método
-
-  //SLIM
-
-  $http.get('Datos/usuarios/'+ $scope.usuario.id)
-  .then(function(respuesta) {       
-
-          $scope.usuario = respuesta.data;
-           
-
-        },function errorCallback(response) {
-            $scope.usuario= [];
-            console.log( response);
-
-    });
-
-  // console.log("Estoy en el menu Superior")
-  // console.log($auth.getPayload());
+app.controller('controlAltaEncuesta', function($scope, $http ,$state,  $auth, FileUploader) {
 
   if($auth.isAuthenticated())
   {
-    //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
+    $scope.DatoTest="ALTA ENCUESTA";
 
-    // console.log("estoy en el if is Authenticated");
+    // $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
 
-    $scope.esVisible={}; //PARA EL NG-IF ADMIN Y CLIENTE
-    if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="cliente")
-    {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=false;
-    }
 
-    $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
-    $scope.esVisibleAdminClient={}; //PARA EL NG-IF SOLO ADMIN y CLIENTE
+          $scope.local={
+            nombre:"Farmacity",
+            localidad:"Lomas de Zamora",
+            mes:"noviembre",
+            anio:2016,
+            porcentaje:0,
+            empleado:"",
+            puno:"",
+            pdos:"",
+            ptres:"",
+            pcuatro:""
+          };
 
-    if($auth.getPayload().tipo=="administrador")
-    {
-      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=false;
-    }
+          $scope.Guardar=function(){
 
-    // console.info($auth.isAuthenticated(), $auth.getPayload());
-    // $scope.DatoTest="**Menu**";
-    // $scope.usuario=$auth.getPayload();
 
-    $scope.Logout=function()
-    {
-      $auth.logout()
-      .then(function()
-      {
-        console.log("estoy dentro del logout");
-        $state.go("login");
-      });
-    };
-  }
-  else{$state.go("login");}
+              ///////////////////SLIM/////////////
+              $http.post('Datos/locales',$scope.local)
+                          .then(function(respuesta) {       
+                               //aca se ejetuca si retorno sin errores        
+                               console.log(respuesta.data);
+                               $state.go("grillaEncuesta");
+
+                          },function errorCallback(response) {        
+                              //aca se ejecuta cuando hay errores
+                              console.log( response);           
+                          });
+
+              // $scope.uploader.onSuccessItem=function(item, response, status, headers)
+              // {
+              //alert($scope.persona.foto);
+                // $http.post('PHP/nexoLocal.php', { datos: {accion :"insertar",local:$scope.local}})
+                //   .then(function(respuesta) {       
+                //      //aca se ejetuca si retorno sin errores        
+                //    console.log(respuesta.data);
+                //    $state.go("encuestas");
+
+                // },function errorCallback(response) {        
+                //     //aca se ejecuta cuando hay errores
+                //     console.log( response);           
+                //   });
+              //console.info("Ya guardé el archivo.", item, response, status, headers);
+             //};
+
+         }
+
+  }else{$state.go("login");}
 
 });
+
+
+
 
 
 app.controller('controlGrillaUsuario', function($scope, $http, $location, $state, FactoryUsuario) {
@@ -485,7 +695,7 @@ console.log( JSON.stringify(usuario));
 
 FactoryUsuario.mostrarNombre("otro").then(function(respuesta){
 
-     $scope.ListadoUsuarios=respuesta;
+$scope.ListadoUsuarios=respuesta;
 
  
 });

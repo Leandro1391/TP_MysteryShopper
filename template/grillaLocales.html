@@ -38,7 +38,7 @@
 
 	  				<td ng-if="esVisible.user"><button class='btn btn-primary' name='formulario' ui-sref="obtenerLocal({})">   <span class='glyphicon glyphicon-edit'>&nbsp;</span>Encuesta</button></td>
 
-	  				<td ng-if="esVisible.adminClient" class="centrar"><button class='btn btn-warning' name='Modificar' ui-sref="modificarLocal({id:locales.id, nombre:locales.nombre, porcentaje:locales.porcentaje})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Formulario</button></td>
+	  				<td ng-if="esVisible.adminClient" class="centrar"><button class='btn btn-warning' name='Modificar' ui-sref="modificarLocal({id:local.id, nombre:local.nombre, localidad:local.localidad, mes:local.mes, anio:local.anio, porcentaje:local.porcentaje, empleado:local.empleado, puno:local.puno, pdos:local.pdos, ptres:local.ptres, pcuatro:local.pcuatro})"><span class='glyphicon glyphicon-edit'>&nbsp;</span>Formulario</button></td>
 
 	  				<td ng-if="esVisible.admin" class="centrar"><button class='btn btn-danger' name='Borrar' ng-click="Borrar(locales.id)">   <span class='glyphicon glyphicon-remove-circle'>&nbsp;</span>Borrar</button></td>
 

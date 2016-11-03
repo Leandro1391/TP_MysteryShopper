@@ -23,39 +23,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `mislocales`
+-- Estructura de tabla para la tabla `informe`
 --
-
-CREATE TABLE IF NOT EXISTS `mislocales` (
+DROP TABLE IF EXISTS `informe`;
+CREATE TABLE IF NOT EXISTS `informe` (
 `id` int(11) NOT NULL,
   `nombre` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   `localidad` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  `mes` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
-  `anio` int(11) COLLATE utf8_spanish2_ci NOT NULL,
-  `porcentaje` int(11) COLLATE utf8_spanish2_ci NOT NULL,
+  `direccion` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
   `empleado` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
-  `puno` ENUM('si', 'no', '') ,
-  `pdos` ENUM('si', 'no', '') ,
-  `ptres` ENUM('si', 'no', '') ,
-  `pcuatro` ENUM('si', 'no', '')
+  `puno` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `pdos` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `ptres` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `pcuatro` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `porcentaje` int(11) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `fecha` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 --
--- Volcado de datos para la tabla `mislocales`
+-- Volcado de datos para la tabla `informe`
 --
 
-INSERT INTO `mislocales` (`id`, `nombre`, `localidad`, `mes` , `anio` , `porcentaje`, `empleado`, `puno`, `pdos`, `ptres`, `pcuatro`) VALUES
-(1, 'Hoyts', 'Quilmes', 'Octubre' , '2016', '75','Julieta Rivas', 'si', 'no', 'si', 'si'),
-(2, 'McDonalds', 'CABA', 'Octubre' , '2016', '50','José López', 'no', 'no', 'si', 'si'),
-(3, 'Garbarino', 'Quilmes', 'Octubre' , '2016','100','Federico Luis', 'si', 'si', 'si', 'si'),
-(4, 'Cinema Village', 'Avellaneda', 'Octubre' , '2016', '25', 'Emanuel Pérez', 'no', 'no', 'si', 'no');
+INSERT INTO `informe` (`id`, `nombre`, `localidad`, `direccion` , `empleado`, `puno`, `pdos`, `ptres`, `pcuatro`, `porcentaje`, `fecha`) VALUES
+(1, 'Hoyts', 'Quilmes', 'Av Calchaquí 3950','Julieta Rivas', 'si', 'no', 'si', 'si', 75, '12/10/2016'),
+(2, 'McDonalds', 'CABA', 'Av Mayo 650', 'José López', 'no', 'no', 'si', 'si', 50, '15/10/2016'),
+(3, 'Garbarino', 'Quilmes', 'Av Calchaquí 3950', 'Federico Luis', 'si', 'si', 'si', 'si', 100, '10/10/2016'),
+(4, 'Cinema Village', 'Avellaneda', 'Carlos Gardel 3900','Emanuel Pérez', 'no', 'no', 'si', 'no', 25, '23/10/2016');
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `misusuarios`
 --
-
+DROP TABLE IF EXISTS `misusuarios`;
 CREATE TABLE IF NOT EXISTS `misusuarios` (
 `id` int(11) NOT NULL,
   `correo` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
@@ -78,14 +78,42 @@ INSERT INTO `misusuarios` (`id`, `correo`, `nombre`, `clave`, `tipo`,`foto`) VAL
 (7, 'bulzara@bulzara.com', 'freddy', 'qwer', 'cliente', '999999.jpg'),
 (8, 'cruise@cruise.com', 'tom', '987', 'cliente', '777777.jpg');
 
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `locales`
+--
+
+DROP TABLE IF EXISTS `locales`;
+CREATE TABLE IF NOT EXISTS `locales` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(25) NOT NULL,
+  `localidad` varchar(25) NOT NULL,
+  `direccion` varchar(50) NOT NULL,
+  `gerente` varchar(50) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `locales`
+--
+
+INSERT INTO `locales` (`id`, `nombre`, `localidad`, `direccion`, `gerente`) VALUES
+(2, 'Garbarino','Avellaneda','Av Gral Güemes 897', 'Griselda Gonzalez'),
+(4, 'Hoyts', 'Temperley', 'Av Hipólito Yrigoyen 10699', 'Pablo Britos'),
+(12, 'Musimundo','Quilmes', 'Av Calchaquí 3950', 'Gastón Gaudio'),
+(13, 'McDonalds','Lomas de Zamora', 'Av Hipólito Yrigoyen 8230', 'Anderson Grey'),
+(18, 'Compumundo','Quilmes', 'Av Calchaquí 3950', 'Julieta Vanegas'),
+(19, 'McDonalds','Avellaneda', 'Av Bartolomé Mitre 633', 'Jesica Grey');
+
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `misproductos`
+-- Indices de la tabla `informe`
 --
-ALTER TABLE `mislocales`
+ALTER TABLE `informe`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -94,20 +122,33 @@ ALTER TABLE `mislocales`
 ALTER TABLE `misusuarios`
  ADD PRIMARY KEY (`id`);
 
+ --
+-- Indices de la tabla `locales`
+--
+ALTER TABLE `locales`
+ ADD PRIMARY KEY (`id`);
+
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `mislocales`
+-- AUTO_INCREMENT de la tabla `informe`
 --
-ALTER TABLE `mislocales`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+ALTER TABLE `informe`
+MODIFY `id` int(8) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT de la tabla `misusuarios`
 --
 ALTER TABLE `misusuarios`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `locales`
+--
+ALTER TABLE `locales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -190,14 +190,15 @@ class Locales
 			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE mislocales set nombre=:nombre,localidad=:localidad,mes=:mes,anio=:anio,porcentaje=:porcentaje,empleado=:empleado,puno=:puno,pdos=:pdos,ptres=:ptres,pcuatro=:pcuatro WHERE id=:id");
 			$consulta->bindValue(':id',$local->id, PDO::PARAM_INT);
 			$consulta->bindValue(':nombre',$local->nombre, PDO::PARAM_STR);
+			$consulta->bindValue(':localidad',$local->localidad, PDO::PARAM_STR);
 			$consulta->bindValue(':mes', $local->mes, PDO::PARAM_STR);
-			$consulta->bindValue(':anio', $local->anio, PDO::PARAM_STR);
-			$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_STR);
+			$consulta->bindValue(':anio', $local->anio, PDO::PARAM_INT);
+			$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_INT);
 			$consulta->bindValue(':empleado', $local->empleado, PDO::PARAM_STR);
-			$consulta->bindValue(':puno', $local->puno, PDO::PARAM_BOOL);
-			$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_BOOL);
-			$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_BOOL);
-			$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_BOOL);
+			$consulta->bindValue(':puno', $local->puno, PDO::PARAM_STR);
+			$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_STR);
+			$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_STR);
+			$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_STR);
 			return $consulta->execute();
 	}
 
@@ -208,17 +209,18 @@ class Locales
 	public static function InsertarLocal($local)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into mislocales (nombre,localidad,mes,anio,porcentaje,empleado,puno,pdos,ptres,pcuatro)values(:nombre,:localidad,:mes,:anio:,:porcentaje,:empleado,:puno,:pdos,:ptres,:pcuatro)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into mislocales (nombre,localidad,mes,anio,porcentaje,empleado,puno,pdos,ptres,pcuatro)values(:nombre,:localidad,:mes,:anio,:porcentaje,:empleado,:puno,:pdos,:ptres,:pcuatro)");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL Insertarlocal (:nombre,:apellido,:dni,:foto)");
-		$consulta->bindValue(':nombre',$local->nombre, PDO::PARAM_STR);		
+		$consulta->bindValue(':nombre',$local->nombre, PDO::PARAM_STR);
+		$consulta->bindValue(':localidad',$local->localidad, PDO::PARAM_STR);				
 		$consulta->bindValue(':mes', $local->mes, PDO::PARAM_STR);
-		$consulta->bindValue(':anio', $local->anio, PDO::PARAM_STR);
-		$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_STR);
+		$consulta->bindValue(':anio', $local->anio, PDO::PARAM_INT);
+		$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_INT);
 		$consulta->bindValue(':empleado', $local->empleado, PDO::PARAM_STR);
-		$consulta->bindValue(':puno', $local->puno, PDO::PARAM_BOOL);
-		$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_BOOL);
-		$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_BOOL);
-		$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_BOOL);
+		$consulta->bindValue(':puno', $local->puno, PDO::PARAM_STR);
+		$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_STR);
+		$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_STR);
+		$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_STR);
 		$consulta->execute();		
 		return $objetoAccesoDato->RetornarUltimoIdInsertado();
 	

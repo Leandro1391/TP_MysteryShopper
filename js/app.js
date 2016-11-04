@@ -28,18 +28,18 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
-  .state('altaEncuesta', {
-    url: '/altaEncuesta',
+  .state('altaLocal', {
+    url: '/altaLocal',
     views: {
-      'principal': {templateUrl: 'template/altaEncuesta.html', controller: 'controlAltaEncuesta' },
+      'principal': {templateUrl: 'template/altaLocal.html', controller: 'controlAltaLocal' },
       'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
     }
   })
 
-  .state('grillaEncuesta', {
-    url: '/grillaEncuesta',
+  .state('grillaInforme', {
+    url: '/grillaInforme',
     views: {
-      'principal': {templateUrl: 'template/grillaEncuesta.html', controller: 'controlGrillaEncuesta' },
+      'principal': {templateUrl: 'template/grillaInforme.html', controller: 'controlGrillaInforme' },
       'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
     }
   })
@@ -69,20 +69,28 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
   })
 
   .state('modificarLocal', {
-      url: '/modificarLocal/{id}?:nombre:localidad:mes:anio:porcentaje:empleado:puno:pdos:ptres:pcuatro',
+      url: '/modificarLocal/{id}?:nombre:localidad:direccion:gerente',
      views: {
-      'principal': { templateUrl: 'template/ver.html',controller: 'controlModificarLocal' },
+      'principal': { templateUrl: 'template/altaLocal.html',controller: 'controlModificarLocal' },
       'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
     }
   })
 
-  .state('verFormulario', {
-    url: '/verFormulario/{id}?:nombre:localidad',
+  .state('encuesta', {
+      url: '/encuesta/{id}?:nombre:localidad:direccion',
      views: {
-      'principal': { templateUrl: 'template/encuesta.html',controller: 'controlVerFormulario' },
-      'menuSuperior': {templateUrl: 'template/menuSuperior.html'}
+      'principal': { templateUrl: 'template/altaLocal.html',controller: 'controlEncuesta' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
     }
   })
+
+  // .state('verFormulario', {
+  //   url: '/verFormulario/{id}?:nombre:localidad',
+  //    views: {
+  //     'principal': { templateUrl: 'template/encuesta.html',controller: 'controlVerFormulario' },
+  //     'menuSuperior': {templateUrl: 'template/menuSuperior.html'}
+  //   }
+  // })
 
   .state('grillaLocal', {
     url: '/grillaLocal',
@@ -114,36 +122,20 @@ app.controller('controlMenu', function($scope, $http, $auth, $state) {
 
   if($auth.isAuthenticated())
   {
-    //PARA HACER VISIBLES LOS BOTONES DE ACUERDO AL TIPO
+     $scope.esVisible={
+      admin:false,
+      user:false,
+      cliente:false
+    }; 
 
-    // console.log("estoy en el if is Authenticated");
 
-    $scope.esVisible={}; //PARA EL NG-IF ADMIN Y VENDEDOR
-    
-    if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="vendedor")
-    {
-      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=false;
-    }
-
-    $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
     if($auth.getPayload().tipo=="administrador")
-    {
-      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=false;
-    }
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
 
-    // console.info($auth.isAuthenticated(), $auth.getPayload());
     
     $scope.usuario=$auth.getPayload();
     $scope.Logout=function()
@@ -191,35 +183,20 @@ app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
 
     // console.log("estoy en el if is Authenticated");
 
-    $scope.esVisible={}; //PARA EL NG-IF ADMIN Y CLIENTE
-    if($auth.getPayload().tipo=="administrador" || $auth.getPayload().tipo=="cliente")
-    {
-      console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisible=false;
-    }
+    $scope.esVisible={
+      admin:false,
+      user:false,
+      cliente:false
+    }; //PARA EL NG-IF ADMIN Y CLIENTE
 
-    $scope.esVisibleAdmin={}; //PARA EL NG-IF SOLO ADMIN
-    $scope.esVisibleAdminClient={}; //PARA EL NG-IF SOLO ADMIN y CLIENTE
 
     if($auth.getPayload().tipo=="administrador")
-    {
-      // console.info("estoy en if, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=true;
-    }
-    else
-    {
-      // console.info("estoy en else, tipo: " + $auth.getPayload().tipo);
-      $scope.esVisibleAdmin=false;
-    }
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
 
-    // console.info($auth.isAuthenticated(), $auth.getPayload());
-    // $scope.DatoTest="**Menu**";
-    // $scope.usuario=$auth.getPayload();
 
     $scope.Logout=function()
     {
@@ -238,21 +215,14 @@ app.controller('controlMenuSuperior', function($scope, $http, $auth, $state) {
 app.controller('controlModificarLocal', function($scope, $http, $state, $auth, FileUploader, $stateParams) {
 
   $scope.local={};
-  $scope.DatoTest="**Modificar**";
+  $scope.DatoTest="MODIFICAR LOCAL";
   $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
   $scope.uploader.queueLimit = 1;
   $scope.local.id=$stateParams.id;
   $scope.local.nombre=$stateParams.nombre;
   $scope.local.localidad=$stateParams.localidad;
-  $scope.local.mes=$stateParams.mes;
-  $scope.local.anio=$stateParams.anio;
-  $scope.local.porcentaje=$stateParams.porcentaje;
-  $scope.local.empleado=$stateParams.empleado;
-  $scope.local.puno=$stateParams.puno;
-  $scope.local.pdos=$stateParams.pdos;
-  $scope.local.ptres=$stateParams.ptres;
-  $scope.local.pcuatro=$stateParams.pcuatro;
-
+  $scope.local.direccion=$stateParams.direccion;
+  $scope.local.gerente=$stateParams.gerente;
 
 
   $scope.uploader.onSuccessItem=function(item, response, status, headers)
@@ -272,6 +242,22 @@ app.controller('controlModificarLocal', function($scope, $http, $state, $auth, F
     console.info("Ya guardé el archivo.", item, response, status, headers);
   };
 
+  $scope.Guardar=function(local)
+  {
+
+    $http.put('Datos/locales',$scope.local)
+    .then(function(respuesta) {       
+    //aca se ejetuca si retorno sin errores        
+    console.log(respuesta.data);
+    $state.go("grillaLocal");
+
+    },function errorCallback(response) {        
+     //aca se ejecuta cuando hay errores
+    console.log( response);           
+    });
+    
+  }
+
 
 });
 
@@ -280,36 +266,51 @@ app.controller('controlModificarLocal', function($scope, $http, $state, $auth, F
 ////////////////CONTROL ENCUESTAS/////////////////
 //////////////////////////////////////////////////
 
-app.controller('controlGrillaEncuesta', function($scope, $http, $state, $auth, FactoryLocal) {
+app.controller('controlGrillaInforme', function($scope, $http, $state, $auth, FactoryInforme) {
 
   if($auth.isAuthenticated())
   {
-    $scope.DatoTest="ENCUESTAS";
+    $scope.DatoTest="INFORMES";
+
+    $scope.esVisible={
+      admin:false,
+      user:false,
+      cliente:false
+    };
 
 
-    FactoryLocal.mostrarNombre("otro").then(function(respuesta){
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
 
-     $scope.ListadoLocales=respuesta;
+
+    FactoryInforme.mostrarNombre("otro").then(function(respuesta){
+
+     $scope.ListadoInformes=respuesta;
  
    });
     //$scope.Listadopersonas =factory.fu();
     //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
-      $scope.Borrar=function(id){
+      $scope.Borrar=function(id) {
+
       console.log("borrar"+id);
-       $http.delete('Datos/locales/'+id)
-     .then(function(respuesta) {   
-    // debugger;    
+
+      $http.delete('Datos/informes/'+id)
+     .then(function(respuesta) {      
              //aca se ejetuca si retorno sin errores        
              console.log(respuesta.data);
 
-            $http.get('Datos/locales')
+            $http.get('Datos/informes')
             .then(function(respuesta) {       
 
-                   $scope.ListadoLocales = respuesta.data;
+                   $scope.ListadoInformes = respuesta.data;
                    console.log(respuesta.data);
 
               },function errorCallback(response) {
-                   $scope.ListadoLocales= [];
+                   $scope.ListadoInformes= [];
                   console.log( response);
 
       });
@@ -318,8 +319,6 @@ app.controller('controlGrillaEncuesta', function($scope, $http, $state, $auth, F
             //aca se ejecuta cuando hay errores
             console.log( response);           
         });
-
-
   }
 
   }else{$state.go("login");}
@@ -532,11 +531,12 @@ app.controller('controlGrillaLocal', function($scope, $http, $state, $auth, Fact
    });
     //$scope.Listadopersonas =factory.fu();
     //$http.get('PHP/nexo.php', { params: {accion :"traer"}})
-      $scope.Borrar=function(id){
+      $scope.Borrar=function(id) {
+
       console.log("borrar"+id);
-       $http.delete('Datos/locales/'+id)
-     .then(function(respuesta) {   
-    // debugger;    
+
+      $http.delete('Datos/locales/'+id)
+     .then(function(respuesta) {      
              //aca se ejetuca si retorno sin errores        
              console.log(respuesta.data);
 
@@ -559,19 +559,20 @@ app.controller('controlGrillaLocal', function($scope, $http, $state, $auth, Fact
 
 
   }
+
   }else{$state.go("login");}
 
 });
 
-  ////////////////////
-  //APP Controller USUARIO
-  ////////////////////
+  //////////////////////////
+  //APP Controller USUARIO//
+  //////////////////////////
 
 app.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploader, cargadoDeFoto) {
   $scope.DatoTest="ALTA USUARIO";
 
   $scope.uploader = new FileUploader({url: 'PHP/nexo.php'});
-  //$scope.uploader.queueLimit = 1;
+  $scope.uploader.queueLimit = 1;
 
 //inicio las variables
   $scope.usuario={};
@@ -620,7 +621,7 @@ app.controller('controlAltaUsuario', function($scope, $http ,$state, FileUploade
   //APP Controller ALTA LOCAL//////
   /////////////////////////////////
 
-app.controller('controlAltaEncuesta', function($scope, $http ,$state,  $auth, FileUploader) {
+app.controller('controlAltaLocal', function($scope, $http ,$state,  $auth, FileUploader) {
 
   if($auth.isAuthenticated())
   {
@@ -631,15 +632,9 @@ app.controller('controlAltaEncuesta', function($scope, $http ,$state,  $auth, Fi
 
           $scope.local={
             nombre:"Farmacity",
-            localidad:"Lomas de Zamora",
-            mes:"noviembre",
-            anio:2016,
-            porcentaje:0,
-            empleado:"",
-            puno:"",
-            pdos:"",
-            ptres:"",
-            pcuatro:""
+            localidad:"Quilmes",
+            direccion:"Av Rivadavía 49",
+            gerente:"Andrea Bochi",
           };
 
           $scope.Guardar=function(){
@@ -650,7 +645,7 @@ app.controller('controlAltaEncuesta', function($scope, $http ,$state,  $auth, Fi
                           .then(function(respuesta) {       
                                //aca se ejetuca si retorno sin errores        
                                console.log(respuesta.data);
-                               $state.go("grillaEncuesta");
+                               $state.go("grillaLocales");
 
                           },function errorCallback(response) {        
                               //aca se ejecuta cuando hay errores
@@ -676,6 +671,54 @@ app.controller('controlAltaEncuesta', function($scope, $http ,$state,  $auth, Fi
          }
 
   }else{$state.go("login");}
+
+});
+
+
+app.controller('controlEncuesta', function($scope, $http ,$state,  $auth, FileUploader, $stateParams) {
+
+  if($auth.isAuthenticated())
+  {
+    $scope.DatoTest="COMPLETANDO ENCUESTA";
+
+    $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
+    $scope.uploader.queueLimit = 1;
+
+    $scope.local={};
+    //$scope.local.id=$stateParams.id;
+    $scope.local.nombre=$stateParams.nombre;
+    $scope.local.localidad=$stateParams.localidad;
+    $scope.local.direccion=$stateParams.direccion;
+    $scope.local.empleado="";
+    $scope.local.puno="";
+    $scope.local.pdos="";
+    $scope.local.ptres="";
+    $scope.local.pcuatro="";
+    $scope.local.porcentaje=null;
+    $scope.local.fecha="18/11/2016";
+
+
+
+          //tengo que traer los datos
+
+          $scope.Guardar=function(){
+
+              ///////////////////SLIM/////////////
+              $http.post('Datos/informes',$scope.local)
+                          .then(function(respuesta) {       
+                               //aca se ejetuca si retorno sin errores        
+                               console.log(respuesta.data);
+                               $state.go("grillaInforme");
+
+                          },function errorCallback(response) {        
+                              //aca se ejecuta cuando hay errores
+                              console.log( response);           
+                          });
+         }
+
+  }
+
+  else{$state.go("login");}
 
 });
 
@@ -749,11 +792,12 @@ $scope.ListadoUsuarios=respuesta;
       });
   }// $scope.Borrar
 
-});                                       //Fin controller GrillaUsuario
+});                                     
 
 
-
- //CONTROLLER DEl Login
+//////////////////////////////////////////////
+///////////////CONTROLLER DEl LOGIN///////////
+//////////////////////////////////////////////
 
 app.controller('controlLogin', function($scope, $http, $auth, $state) {
   
@@ -816,6 +860,27 @@ app.controller('controlLogin', function($scope, $http, $auth, $state) {
 ////////////////////////////////////////////////
 // EMPIEZAN LOS SERVICIOS Y FACTORY ////////////
 ///////////////////////////////////////////////
+
+
+app.factory('FactoryInforme', function(ServicioInforme){
+
+  var informe = {
+   
+    mostrarNombre:function(dato){
+      
+     return ServicioInforme.retornarInformes().then(function(respuesta){
+       
+        return respuesta;
+      });
+    },
+    // mostrarapellido:function(){
+    //   console.log("soy otra funcion de factory");
+    // }
+}
+  return informe;
+
+});
+
 
 app.factory('FactoryLocal', function(ServicioLocal){
 
@@ -898,6 +963,23 @@ app.service('ServicioUsuario', function($http){
   this.retornarUsuarios = function(){
 
        return $http.get('Datos/usuarios')
+                    .then(function(respuesta) 
+                    {     
+                      console.log(respuesta.data);
+                      return respuesta.data;
+                    });
+                  };
+
+                  //return listado;
+});
+
+
+app.service('ServicioInforme', function($http){
+  var listado;
+
+  this.retornarInformes = function(){
+
+       return $http.get('Datos/informes')
                     .then(function(respuesta) 
                     {     
                       console.log(respuesta.data);

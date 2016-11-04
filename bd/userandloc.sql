@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `informe` (
 `id` int(11) NOT NULL,
   `nombre` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
   `localidad` varchar(50) COLLATE utf8_spanish2_ci NOT NULL,
-  `direccion` varchar(15) COLLATE utf8_spanish2_ci NOT NULL,
+  `direccion` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
   `empleado` varchar(30) COLLATE utf8_spanish2_ci NOT NULL,
   `puno` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
   `pdos` varchar(3) COLLATE utf8_spanish2_ci DEFAULT NULL,
@@ -82,11 +82,11 @@ INSERT INTO `misusuarios` (`id`, `correo`, `nombre`, `clave`, `tipo`,`foto`) VAL
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `locales`
+-- Estructura de tabla para la tabla `mislocales`
 --
 
-DROP TABLE IF EXISTS `locales`;
-CREATE TABLE IF NOT EXISTS `locales` (
+DROP TABLE IF EXISTS `mislocales`;
+CREATE TABLE IF NOT EXISTS `mislocales` (
   `id` int(11) NOT NULL,
   `nombre` varchar(25) NOT NULL,
   `localidad` varchar(25) NOT NULL,
@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS `locales` (
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `locales`
+-- Volcado de datos para la tabla `mislocales`
 --
 
-INSERT INTO `locales` (`id`, `nombre`, `localidad`, `direccion`, `gerente`) VALUES
+INSERT INTO `mislocales` (`id`, `nombre`, `localidad`, `direccion`, `gerente`) VALUES
 (2, 'Garbarino','Avellaneda','Av Gral Güemes 897', 'Griselda Gonzalez'),
 (4, 'Hoyts', 'Temperley', 'Av Hipólito Yrigoyen 10699', 'Pablo Britos'),
 (12, 'Musimundo','Quilmes', 'Av Calchaquí 3950', 'Gastón Gaudio'),
@@ -123,9 +123,9 @@ ALTER TABLE `misusuarios`
  ADD PRIMARY KEY (`id`);
 
  --
--- Indices de la tabla `locales`
+-- Indices de la tabla `mislocales`
 --
-ALTER TABLE `locales`
+ALTER TABLE `mislocales`
  ADD PRIMARY KEY (`id`);
 
 --
@@ -145,9 +145,9 @@ ALTER TABLE `misusuarios`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `locales`
+-- AUTO_INCREMENT de la tabla `mislocales`
 --
-ALTER TABLE `locales`
+ALTER TABLE `mislocales`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

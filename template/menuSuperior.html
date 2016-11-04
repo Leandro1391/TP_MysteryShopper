@@ -5,29 +5,29 @@
 		         		 Inicio 
 		         	</a>
 		         </li>
-		         <li class="btn btn-info animated bounceInLeft" ng-if="esVisibleAdmin">
-		         	<a ui-sref="altaUsuario" ng-if="esVisibleAdmin" class="active">
+		         <li class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin">
+		         	<a ui-sref="altaUsuario" ng-if="esVisible.admin">
 		         		<span class="glyphicon glyphicon-plus-sign">&nbsp;</span>
 		         		Alta Usuarios
 		         	</a>
-		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisibleAdmin">
-		         	<a ui-sref="altaEncuesta" ng-if="esVisibleAdmin"> 
+		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin">
+		         	<a ui-sref="altaLocal" ng-if="esVisible.admin"> 
 		         		<span class="glyphicon glyphicon-plus-sign" >&nbsp;</span>
-		         			Alta Encuesta</a>
+		         			Alta Local</a>
 		         		</li>
 		         </li>
-		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisibleAdmin">
-		         	<a ui-sref="grillaUsuario" ng-if="esVisibleAdmin"> 
+		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin">
+		         	<a ui-sref="grillaUsuario" ng-if="esVisible.admin"> 
 		         		<span class="glyphicon glyphicon-th" >&nbsp;</span>
 		         			Usuarios</a>
 		         		</li>
-		         <li  class="btn btn-info animated bounceInLeft" >
-		         	<a ui-sref="grillaLocal"> 
+		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin || esVisible.user">
+		         	<a ui-sref="grillaLocal" g-if="esVisible.admin || esVisible.user"> 
 		         		<span class="glyphicon glyphicon-th" >&nbsp;</span>
 		         			Locales</a>
 		         		</li>
-		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible">
-		         	<a ui-sref="grillaEncuesta" ng-if="esVisible"> 
+		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin || esVisible.cliente">
+		         	<a ui-sref="grillaInforme" ng-if="esVisible || esVisible.cliente"> 
 		         		<span class="glyphicon glyphicon-th-list" >&nbsp;</span>
 		         			Informes</a>
 		         		</li>

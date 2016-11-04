@@ -7,14 +7,8 @@ class Locales
 	public $id;
 	public $nombre;
 	public $localidad;
-	public $mes;
-	public $anio;
- 	public $porcentaje;
- 	public $empleado;
- 	public $puno;
- 	public $pdos;
- 	public $ptres;
- 	public $pcuatro;
+	public $direccion;
+	public $gerente;
 
 //--------------------------------------------------------------------------------//
 
@@ -32,38 +26,15 @@ class Locales
 	{
 		return $this->localidad;
 	}
-	public function GetMes()
+	public function GetDireccion()
 	{
-		return $this->mes;
+		return $this->direccion;
 	}
-	public function GetAnio()
+	public function GetGerente()
 	{
-		return $this->anio;
+		return $this->gerente;
 	}
-	public function GetPorcentaje()
-	{
-		return $this->porcentaje;
-	}
-	public function GetEmpleado()
-	{
-		return $this->empleado;
-	}
-	public function GetPuno()
-	{
-		return $this->puno;
-	}
-	public function GetPdos()
-	{
-		return $this->pdos;
-	}
-	public function GetTres()
-	{
-		return $this->ptres;
-	}
-	public function GetCuatro()
-	{
-		return $this->pcuatro;
-	}
+	
 
 	public function SetId($valor)
 	{
@@ -77,37 +48,13 @@ class Locales
 	{
 		$this->localidad = $valor;
 	}
-	public function SetMes($valor)
+	public function SetDireccion($valor)
 	{
-		$this->mes = $valor;
+		$this->direccion = $valor;
 	}
-	public function SetAnio($valor)
+	public function SetGerente($valor)
 	{
-		$this->anio = $valor;
-	}
-	public function SetPorcentaje($valor)
-	{
-		$this->porcentaje = $valor;
-	}
-	public function SetEmpleado($valor)
-	{
-		$this->empleado = $valor;
-	}
-	public function SetPuno($valor)
-	{
-		$this->puno = $valor;
-	}
-	public function SetPdos($valor)
-	{
-		$this->pdos = $valor;
-	}
-	public function SetPtres($valor)
-	{
-		$this->ptres = $valor;
-	}
-	public function SetPcuatro($valor)
-	{
-		$this->pcuatro = $valor;
+		$this->gerente = $valor;
 	}
 	
 //--------------------------------------------------------------------------------//
@@ -120,14 +67,8 @@ class Locales
 			$this->id = $id;		
 			$this->nombre = $obj->nombre;
 			$this->localidad = $obj->localidad;
-			$this->mes = $obj->mes;
-			$this->anio = $obj->anio;
-			$this->porcentaje = $obj->porcentaje;
-			$this->empleado = $obj->empleado;
-			$this->puno = $obj->puno;
-			$this->pdos = $obj->pdos;
-			$this->ptres = $obj->ptres;
-			$this->pcuatro = $obj->pcuatro;
+			$this->direccion = $obj->direccion;
+			$this->gerente = $obj->gerente;
 		}
 	}
 
@@ -135,7 +76,7 @@ class Locales
 //--TOSTRING	
   	public function ToString()
 	{
-	  	return $this->nombre."-".$this->localidad."-".$this->mes."-".$this->anio."-".$this->porcentaje."-".$this->empleado."-".$this->puno."-".$this->pdos."-".$this->ptres."-".$this->pcuatro;
+	  	return $this->nombre."-".$this->localidad."-".$this->direccion."-".$this->gerente;
 	}
 //--------------------------------------------------------------------------------//
 
@@ -187,18 +128,12 @@ class Locales
 				WHERE id=:id");
 			$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();*/ 
 			//$consulta =$objetoAccesoDato->RetornarConsulta("CALL ModificarProducto(:dni,:nombre,:apellido,:foto)");
-			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE mislocales set nombre=:nombre,localidad=:localidad,mes=:mes,anio=:anio,porcentaje=:porcentaje,empleado=:empleado,puno=:puno,pdos=:pdos,ptres=:ptres,pcuatro=:pcuatro WHERE id=:id");
+			$consulta =$objetoAccesoDato->RetornarConsulta("UPDATE mislocales set nombre=:nombre,localidad=:localidad,direccion=:direccion,gerente=:gerente WHERE id=:id");
 			$consulta->bindValue(':id',$local->id, PDO::PARAM_INT);
 			$consulta->bindValue(':nombre',$local->nombre, PDO::PARAM_STR);
 			$consulta->bindValue(':localidad',$local->localidad, PDO::PARAM_STR);
-			$consulta->bindValue(':mes', $local->mes, PDO::PARAM_STR);
-			$consulta->bindValue(':anio', $local->anio, PDO::PARAM_INT);
-			$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_INT);
-			$consulta->bindValue(':empleado', $local->empleado, PDO::PARAM_STR);
-			$consulta->bindValue(':puno', $local->puno, PDO::PARAM_STR);
-			$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_STR);
-			$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_STR);
-			$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_STR);
+			$consulta->bindValue(':direccion', $local->direccion, PDO::PARAM_STR);
+			$consulta->bindValue(':gerente', $local->gerente, PDO::PARAM_STR);
 			return $consulta->execute();
 	}
 
@@ -209,18 +144,12 @@ class Locales
 	public static function InsertarLocal($local)
 	{
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
-		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into mislocales (nombre,localidad,mes,anio,porcentaje,empleado,puno,pdos,ptres,pcuatro)values(:nombre,:localidad,:mes,:anio,:porcentaje,:empleado,:puno,:pdos,:ptres,:pcuatro)");
+		$consulta =$objetoAccesoDato->RetornarConsulta("INSERT into mislocales (nombre,localidad,direccion,gerente)values(:nombre,:localidad,:direccion,:gerente)");
 		//$consulta =$objetoAccesoDato->RetornarConsulta("CALL Insertarlocal (:nombre,:apellido,:dni,:foto)");
 		$consulta->bindValue(':nombre',$local->nombre, PDO::PARAM_STR);
 		$consulta->bindValue(':localidad',$local->localidad, PDO::PARAM_STR);				
-		$consulta->bindValue(':mes', $local->mes, PDO::PARAM_STR);
-		$consulta->bindValue(':anio', $local->anio, PDO::PARAM_INT);
-		$consulta->bindValue(':porcentaje', $local->porcentaje, PDO::PARAM_INT);
-		$consulta->bindValue(':empleado', $local->empleado, PDO::PARAM_STR);
-		$consulta->bindValue(':puno', $local->puno, PDO::PARAM_STR);
-		$consulta->bindValue(':pdos', $local->pdos, PDO::PARAM_STR);
-		$consulta->bindValue(':ptres', $local->ptres, PDO::PARAM_STR);
-		$consulta->bindValue(':pcuatro', $local->pcuatro, PDO::PARAM_STR);
+		$consulta->bindValue(':direccion', $local->direccion, PDO::PARAM_STR);
+		$consulta->bindValue(':gerente', $local->gerente, PDO::PARAM_STR);
 		$consulta->execute();		
 		return $objetoAccesoDato->RetornarUltimoIdInsertado();
 	

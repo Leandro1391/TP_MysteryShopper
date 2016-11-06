@@ -164,6 +164,15 @@ class informe
 		$arrInformes= $consulta->fetchAll(PDO::FETCH_CLASS, "informe");	
 		return $arrInformes;
 	}
+
+	public static function TraerInformesPorSucursal()
+	{
+		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
+		$consulta =$objetoAccesoDato->RetornarConsulta("SELECT * FROM informe ORDER BY nombre");
+		$consulta->execute();			
+		$arrPersonas= $consulta->fetchAll(PDO::FETCH_CLASS, "informe");	
+		return $arrPersonas;
+	}
 	
 	public static function BorrarInforme($idParametro)
 	{	

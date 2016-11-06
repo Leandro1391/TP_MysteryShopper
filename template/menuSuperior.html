@@ -31,6 +31,12 @@
 		         		<span class="glyphicon glyphicon-th-list" >&nbsp;</span>
 		         			Informes</a>
 		         		</li>
+
+		         <li  class="btn btn-info animated bounceInLeft" ng-if="esVisible.admin || esVisible.cliente">
+		         	<a ui-sref="reporte" ng-if="esVisible || esVisible.cliente"> 
+		         		<span class="glyphicon glyphicon-th-list" >&nbsp;</span>
+		         			Reporte</a>
+		         		</li>
 		         <!-- <li  class="btn btn-info animated bounceInLeft">
 		         	<a ng-click="Logout()"> 
 		         		<span class="glyphicon glyphicon-off" >&nbsp;</span>

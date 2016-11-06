@@ -76,6 +76,14 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
+  .state('reporte', {
+    url: '/reporte',
+    views: {
+      'principal': {templateUrl: 'template/menuDos.html', controller: 'controlReporte' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
+    }
+  })
+
   .state('encuesta', {
       url: '/encuesta/{id}?:nombre:localidad:direccion',
      views: {
@@ -679,7 +687,25 @@ app.controller('controlEncuesta', function($scope, $http ,$state,  $auth, FileUp
 
   if($auth.isAuthenticated())
   {
+
     $scope.DatoTest="COMPLETANDO ENCUESTA";
+
+    $scope.DatoTest="INFORMES";
+
+    $scope.esVisible={
+      admin:false,
+      user:false,
+      cliente:false
+    };
+
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
 
     $scope.uploader = new FileUploader({url: 'PHP/nexoLocal.php'});
     $scope.uploader.queueLimit = 1;
@@ -689,13 +715,36 @@ app.controller('controlEncuesta', function($scope, $http ,$state,  $auth, FileUp
     $scope.local.nombre=$stateParams.nombre;
     $scope.local.localidad=$stateParams.localidad;
     $scope.local.direccion=$stateParams.direccion;
-    $scope.local.empleado="";
-    $scope.local.puno="";
-    $scope.local.pdos="";
-    $scope.local.ptres="";
-    $scope.local.pcuatro="";
+    $scope.local.empleado=null;
+    $scope.local.puno=null;
+    $scope.local.pdos=null;
+    $scope.local.ptres=null;
+    $scope.local.pcuatro=null;
     $scope.local.porcentaje=null;
-    $scope.local.fecha="18/11/2016";
+
+    //fecha actual
+    $scope.local.fecha=new Date();
+
+    var dd = $scope.local.fecha.getDate();
+    var mm = $scope.local.fecha.getMonth()+1; //Enero es 0!
+    
+    var yyyy = $scope.local.fecha.getFullYear();
+    
+    $scope.local.fecha= dd+'/'+mm+'/'+yyyy;
+
+    var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+// var yyyy = today.getFullYear();
+// if(dd<10){
+//     dd='0'+dd
+// } 
+// if(mm<10){
+//     mm='0'+mm
+// } 
+// var today = dd+'/'+mm+'/'+yyyy;
+// document.getElementById("DATE").value = today;
 
 
 
@@ -703,24 +752,106 @@ app.controller('controlEncuesta', function($scope, $http ,$state,  $auth, FileUp
 
           $scope.Guardar=function(){
 
-              ///////////////////SLIM/////////////
-              $http.post('Datos/informes',$scope.local)
-                          .then(function(respuesta) {       
-                               //aca se ejetuca si retorno sin errores        
-                               console.log(respuesta.data);
-                               $state.go("grillaInforme");
+            if ($scope.local.puno!=null && $scope.local.pdos!=null && $scope.local.ptres!=null && $scope.local.pcuatro!=null && $scope.local.empleado!=null) 
+            {
 
-                          },function errorCallback(response) {        
-                              //aca se ejecuta cuando hay errores
-                              console.log( response);           
-                          });
-         }
+              if (confirm("¿Seguro que desea guardar los datos ingresados?")) 
+              {
+
+                    $scope.cantidad = 4;
+                    $scope.incremento = 0;
+
+                    if($scope.local.puno == "si")
+                      $scope.incremento++;
+                    if($scope.local.pdos == "si")
+                      $scope.incremento++;
+                    if($scope.local.ptres == "si")
+                      $scope.incremento++;
+                    if($scope.local.pcuatro == "si")
+                      $scope.incremento++;
+
+                    $scope.local.porcentaje = ($scope.incremento/$scope.cantidad)*100;
+
+
+                    ///////////////////SLIM/////////////
+                    $http.post('Datos/informes',$scope.local)
+                                .then(function(respuesta) {       
+                                     //aca se ejetuca si retorno sin errores        
+                                     console.log(respuesta.data);
+                                     $state.go("grillaInforme");
+
+                                },function errorCallback(response) {        
+                                    //aca se ejecuta cuando hay errores
+                                    console.log( response);           
+                                });
+
+              }
+
+            }else
+            alert("Para guardar hay que completar todos los campos");
+
+            
+        } // end function guardar
 
   }
 
   else{$state.go("login");}
 
 });
+
+
+/////////////////////////////////////
+/////// CONTROLLER REPORTE//////////
+/////////////////////////////////////
+
+app.controller('controlReporte', function($scope, $http, $auth, $state)
+{
+  if($auth.isAuthenticated())
+  {
+    console.info($auth.isAuthenticated(), $auth.getPayload());
+    $scope.DatoTest="**Menu**";
+    $scope.usuario=$auth.getPayload();
+
+
+    $scope.esVisible={
+      admin:false,
+      user:false,
+      cliente:false
+    };
+
+
+    if($auth.getPayload().tipo=="administrador")
+      $scope.esVisible.admin=true;
+    if($auth.getPayload().tipo=="usuario")
+      $scope.esVisible.user=true;
+    if($auth.getPayload().tipo=="cliente")
+      $scope.esVisible.cliente=true;
+
+
+
+    $scope.GenerarGrafico=function()
+    {
+      window.open('http://localhost:8080/FINAL2016/Highcharts/examples/pie-basic/index.htm');
+    };
+
+
+    $scope.GenerarPDF=function()
+    {//OK
+      window.open('http://localhost:8080/TpLab4Iadanza/PHP/clases/pdf.php');
+    };
+    $scope.GenerarExcel=function()
+    {
+      window.open('http://localhost:8080/TpLab4Iadanza/PHP/clases/excel.php');  
+    };
+
+
+  }
+  else
+  {
+    $state.go("login");
+  }
+});
+
 
 
 

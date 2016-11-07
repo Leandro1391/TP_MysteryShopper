@@ -84,6 +84,14 @@ var app = angular.module('Mystery', ['ngAnimate','ui.router','angularFileUpload'
     }
   })
 
+  .state('graficoEstadistico', {
+    url: '/graficoEstadistico',
+    views: {
+      'principal': {templateUrl: 'template/grafico.html', controller: 'controlGrafico' },
+      'menuSuperior': {templateUrl: 'template/menuSuperior.html', controller: 'controlMenuSuperior'}
+    }
+  })
+
   .state('encuesta', {
       url: '/encuesta/{id}?:nombre:localidad:direccion',
      views: {
@@ -800,6 +808,75 @@ var mm = today.getMonth()+1; //January is 0!
 });
 
 
+app.controller('controlGrafico', function ($scope, FactoryInforme) {
+
+
+  FactoryInforme.mostrarNombre("otro").then(function(respuesta){
+
+  $scope.ListadoInformes=respuesta;
+
+ 
+  });
+
+  // Sample options for first chart
+                // $scope.chartOptions = {
+                //     title: {
+                //         text: 'Temperature data'
+                //     },
+                //     xAxis: {
+                //         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                //             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                //     },
+
+                //     series: [{
+                //         data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                //     }]
+                // };
+
+                // // Sample data for pie chart
+                // $scope.pieData = [{
+                //         name: "Microsoft Internet Explorer",
+                //         y: 56.33
+                //     }, {
+                //         name: "Chrome",
+                //         y: 24.03,
+                //         sliced: false,
+                //         selected: false
+                //     }, {
+                //         name: "Firefox",
+                //         y: 10.38
+                //     }, {
+                //         name: "Safari",
+                //         y: 4.77
+                //     }, {
+                //         name: "Opera",
+                //         y: 0.91
+                //     }, {
+                //         name: "Proprietary or Undetectable",
+                //         y: 0.2
+                // }]
+
+
+        Highcharts.chart('container', {
+
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            yAxis: {
+              title: {
+                text: 'porcentaje (%)'
+                //categories:[0, 25, 50, 75, 100]
+            }
+        },
+
+            series: [{
+                data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+            }]
+        });
+  });
+
+
 /////////////////////////////////////
 /////// CONTROLLER REPORTE//////////
 /////////////////////////////////////
@@ -827,12 +904,6 @@ app.controller('controlReporte', function($scope, $http, $auth, $state)
     if($auth.getPayload().tipo=="cliente")
       $scope.esVisible.cliente=true;
 
-
-
-    $scope.GenerarGrafico=function()
-    {
-      window.open('http://localhost:8080/FINAL2016/Highcharts/examples/pie-basic/index.htm');
-    };
 
 
     $scope.GenerarPDF=function()
@@ -984,6 +1055,61 @@ app.controller('controlLogin', function($scope, $http, $auth, $state) {
     };
   }
 });
+
+
+
+///////////////////////////////////////////////////////
+/////////////////////DIRECTIVAS////////////////////////
+//////////////////////////////////////////////////////
+
+
+// Directiva para generar chart, pass in chart options
+            app.directive('hcChart', function () {
+                return {
+                    restrict: 'E',
+                    template: '<div></div>',
+                    scope: {
+                        options: '='
+                    },
+                    link: function (scope, element) {
+                        Highcharts.chart(element[0], scope.options);
+                    }
+                };
+            })
+            // Directive for pie charts, pass in title and data only    
+            app.directive('hcPieChart', function () {
+                return {
+                    restrict: 'E',
+                    template: '<div></div>',
+                    scope: {
+                        title: '@',
+                        data: '='
+                    },
+                    link: function (scope, element) {
+                        Highcharts.chart(element[0], {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: scope.title
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                    }
+                                }
+                            },
+                            series: [{
+                                data: scope.data
+                            }]
+                        });
+                    }
+                };
+            })
 
 
 
